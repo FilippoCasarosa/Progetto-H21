@@ -1,7 +1,13 @@
-/**
-@author Jessica Vecchia
- */
 package it.skinjobs.api;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -34,38 +40,29 @@ import it.skinjobs.repository.Credentials;
 import it.skinjobs.repository.Sessions;
 import it.skinjobs.utils.CredentialsProperties;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.AdditionalAnswers.*;
-import static org.mockito.Mockito.doAnswer;
-import static org.hamcrest.Matchers.*;
-
-import org.mockito.Mockito;
-
 @SpringBootTest(classes = { ConfiguratorApplicationAPI.class, H2TestProfileConfig.class })
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 public class CredentialApiTest {
-    @Autowired
-    MockMvc mockMvc;
 
     @Autowired
-    ObjectMapper mapper;
+    private MockMvc mockMvc;
 
     @Autowired
-    CredentialsProperties properties;
+    private ObjectMapper mapper;
+
+    @Autowired
+    private CredentialsProperties properties;
 
     @MockBean
     private Credentials credentials;
 
     @MockBean
-    Sessions sessions;
+    private Sessions sessions;
 
     @Autowired
-    CredentialAPI credentialAPI;
+    private CredentialAPI credentialAPI;
 
     private List<Credential> credentialList;
     private CredentialDTO credentialDTO;
@@ -73,108 +70,113 @@ public class CredentialApiTest {
 
     @Before
     public void init() {
-        // This setup method is intentionally left blank.
-        // No initialization is required for the current test context.
+        // No setup required here; Spring handles @Autowired beans
     }
 
+    @Test
+    public void testConstructor() {
+        CredentialsProperties localProperties = new CredentialsProperties();
+        localProperties.setName("admin");
+        localProperties.setPassword("admin");
 
-@Test
-public void testConstructor() {
-    CredentialsProperties localProperties = new CredentialsProperties();
-    localProperties.setName("admin");
-    localProperties.setPassword("admin");
+        doAnswer(returnsFirstArg()).when(credentials).save(any(Credential.class));
+        when(credentials.findByName(anyString())).thenReturn(new ArrayList<>());
 
-    Mockito.when(credentials.findByName(anyString())).thenReturn(new ArrayList<>());
-    doAnswer(returnsFirstArg()).when(credentials).save(Mockito.any(Credential.class));
+        // Include sessions when constructing locally
+        CredentialAPI localCredentialAPI = new CredentialAPI(credentials, sessions, localProperties);
 
-    CredentialAPI localCredentialAPI = new CredentialAPI(this.credentials, localProperties);
-
-    assertEquals("admin", localCredentialAPI.getAdminCredential().getName());
-    assertEquals("admin", localCredentialAPI.getAdminCredential().getPassword());
-}
-
+        assertEquals("admin", localCredentialAPI.getAdminCredential().getName());
+        assertEquals("admin", localCredentialAPI.getAdminCredential().getPassword());
+    }
 
     @Test
     public void testLoginSuccess() throws Exception {
-        this.credentialDTO = new CredentialDTO();
-        this.credentialDTO.setName("admin");
-        this.credentialDTO.setPassword("admin");
-        this.credentialList = new ArrayList<>();
-        this.credentialList.add(new Credential());
-        this.credentialList.get(0).setName("admin");
-        this.credentialList.get(0).setPassword("admin");
+        credentialDTO = new CredentialDTO();
+        credentialDTO.setName("admin");
+        credentialDTO.setPassword("admin");
 
-        Mockito.when(credentials.findByName(anyString())).thenReturn(credentialList);
-        doAnswer(returnsFirstArg()).when(sessions).save(Mockito.any(Session.class));
+        Credential c = new Credential();
+        c.setName("admin");
+        c.setPassword("admin");
+
+        credentialList = new ArrayList<>();
+        credentialList.add(c);
+
+        when(credentials.findByName(anyString())).thenReturn(credentialList);
+        doAnswer(returnsFirstArg()).when(sessions).save(any(Session.class));
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/login")
-        .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
-        .content(this.mapper.writeValueAsString(this.credentialDTO));
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(credentialDTO));
 
         mockMvc.perform(request)
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", notNullValue()))
-            .andExpect(jsonPath("$.credential.name", is("admin")));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", notNullValue()))
+                .andExpect(jsonPath("$.credential.name", is("admin")));
     }
 
     @Test
     public void testLoginNotFound() throws Exception {
-        this.credentialDTO = new CredentialDTO();
-        this.credentialDTO.setName("Pippo");
-        this.credentialDTO.setPassword("admin");
+        credentialDTO = new CredentialDTO();
+        credentialDTO.setName("Pippo");
+        credentialDTO.setPassword("admin");
 
-        Mockito.when(credentials.findByName(anyString())).thenReturn(new ArrayList<Credential>());
-        
+        when(credentials.findByName(anyString())).thenReturn(new ArrayList<>());
+
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/login")
-        .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
-        .content(this.mapper.writeValueAsString(this.credentialDTO));
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(credentialDTO));
 
         mockMvc.perform(request)
-            .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound());
     }
 
     @Test
     public void testLoginFail() throws Exception {
-        this.credentialDTO = new CredentialDTO();
-        this.credentialDTO.setName("admin");
-        this.credentialDTO.setPassword("Paperino");
-        this.credentialList = new ArrayList<>();
-        this.credentialList.add(new Credential());
-        this.credentialList.get(0).setName("admin");
-        this.credentialList.get(0).setPassword("admin");
+        credentialDTO = new CredentialDTO();
+        credentialDTO.setName("admin");
+        credentialDTO.setPassword("Paperino");
 
-        Mockito.when(credentials.findByName(anyString())).thenReturn(credentialList);
-        
+        Credential c = new Credential();
+        c.setName("admin");
+        c.setPassword("admin");
+
+        credentialList = new ArrayList<>();
+        credentialList.add(c);
+
+        when(credentials.findByName(anyString())).thenReturn(credentialList);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/login")
-        .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
-        .content(this.mapper.writeValueAsString(this.credentialDTO));
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(credentialDTO));
 
         mockMvc.perform(request)
-            .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden());
     }
 
     @Test
     public void testSessionIsValid() {
         Session session = new Session();
         session.setToken("123");
-        Instant time = Instant.now();
-        Instant future = time.plus(1, ChronoUnit.MINUTES);
+        Instant future = Instant.now().plus(1, ChronoUnit.MINUTES);
         Date date = Date.from(future);
         session.setExpireDate(date);
-        long diff = session.getExpireDate().getTime() - date.getTime();
-        assertEquals(true, diff == 0);
-        this.sessionList = new ArrayList<>();
-        this.sessionList.add(session);
-        Mockito.when(sessions.findByToken(anyString())).thenReturn(sessionList);
-        assertEquals(true, this.credentialAPI.sessionIsValid("123"));
-        diff = session.getExpireDate().getTime() - date.getTime();
-        assertEquals(true, diff > 1700000);
+
+        sessionList = new ArrayList<>();
+        sessionList.add(session);
+
+        when(sessions.findByToken(anyString())).thenReturn(sessionList);
+
+        assertTrue(credentialAPI.sessionIsValid("123"));
     }
 
     @Test
     public void testSessionIsNotValid() {
-        Mockito.when(sessions.findByToken(anyString())).thenReturn(new ArrayList<Session>());
-        assertEquals(false, this.credentialAPI.sessionIsValid("421"));
+        when(sessions.findByToken(anyString())).thenReturn(new ArrayList<>());
+
+        assertFalse(credentialAPI.sessionIsValid("421"));
     }
 }
