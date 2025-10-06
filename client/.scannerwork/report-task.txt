@@ -1,0 +1,6 @@
+projectKey=Progetto-H21
+serverUrl=http://localhost:9000
+serverVersion=25.10.0.114319
+dashboardUrl=http://localhost:9000/dashboard?id=Progetto-H21
+ceTaskId=db540962-5758-41bc-b104-263c0d14c028
+ceTaskUrl=http://localhost:9000/api/ce/task?id=db540962-5758-41bc-b104-263c0d14c028

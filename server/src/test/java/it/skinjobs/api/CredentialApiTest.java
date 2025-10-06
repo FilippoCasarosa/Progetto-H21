@@ -8,7 +8,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -69,26 +68,31 @@ public class CredentialApiTest {
     CredentialAPI credentialAPI;
 
     private List<Credential> credentialList;
-    private Credential saved;
     private CredentialDTO credentialDTO;
     private List<Session> sessionList;
 
     @Before
     public void init() {
-        
+        // This setup method is intentionally left blank.
+        // No initialization is required for the current test context.
     }
 
-    @Test
-    public void testConstructor() {
-        CredentialsProperties properties = new CredentialsProperties();
-        properties.setName("admin");
-        properties.setPassword("admin");
-        Mockito.when(credentials.findByName(anyString())).thenReturn(new ArrayList<>());
-        doAnswer(returnsFirstArg()).when(credentials).save(Mockito.any(Credential.class));
-        CredentialAPI credentialAPI = new CredentialAPI(this.credentials, this.properties);
-        assertEquals("admin", credentialAPI.getAdminCredential().getName());
-        assertEquals("admin", credentialAPI.getAdminCredential().getPassword());
-    }
+
+@Test
+public void testConstructor() {
+    CredentialsProperties localProperties = new CredentialsProperties();
+    localProperties.setName("admin");
+    localProperties.setPassword("admin");
+
+    Mockito.when(credentials.findByName(anyString())).thenReturn(new ArrayList<>());
+    doAnswer(returnsFirstArg()).when(credentials).save(Mockito.any(Credential.class));
+
+    CredentialAPI localCredentialAPI = new CredentialAPI(this.credentials, localProperties);
+
+    assertEquals("admin", localCredentialAPI.getAdminCredential().getName());
+    assertEquals("admin", localCredentialAPI.getAdminCredential().getPassword());
+}
+
 
     @Test
     public void testLoginSuccess() throws Exception {
@@ -172,6 +176,5 @@ public class CredentialApiTest {
     public void testSessionIsNotValid() {
         Mockito.when(sessions.findByToken(anyString())).thenReturn(new ArrayList<Session>());
         assertEquals(false, this.credentialAPI.sessionIsValid("421"));
-      
     }
 }

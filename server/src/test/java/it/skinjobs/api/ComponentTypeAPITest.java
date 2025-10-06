@@ -61,7 +61,6 @@ public class ComponentTypeAPITest {
    @MockBean
    private CredentialAPI credentialAPI;
 
-   
    @MockBean
    private ComponentFamilyAPI componentFamilyAPI;
 
@@ -81,29 +80,29 @@ public class ComponentTypeAPITest {
       types = new ArrayList<>();
       types.add(type1);
       types.add(type2);
-      Mockito.when(componentTypes.findAllSorted()).thenReturn(types);   
+      Mockito.when(componentTypes.findAllSorted()).thenReturn(types);
    }
 
    @Test
-   public void getAll() throws Exception {      
+   public void getAll() throws Exception {
       mockMvc.perform(MockMvcRequestBuilders
-         .get("/componentTypes"))
-         .andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(2)))
-         .andExpect(jsonPath("$[1].name", is("Type2")));
+            .get("/componentTypes"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(2)))
+            .andExpect(jsonPath("$[1].name", is("Type2")));
    }
-   
+
    @Test
-   public void getByIdTestOk() throws Exception {    
-      ComponentType type = new ComponentType(); 
+   public void getByIdTestOk() throws Exception {
+      ComponentType type = new ComponentType();
       type.setId(1);
       type.setName("Pippo");
       type.setSortOrder(0);
       Mockito.when(componentTypes.findById(anyInt())).thenReturn(Optional.ofNullable(type));
       mockMvc.perform(MockMvcRequestBuilders
-         .get("/componentTypes/" + 1))
-         .andExpect(status().isOk())
-         .andExpect(jsonPath("$.name", is("Pippo")))
-         .andExpect(jsonPath("$.sortOrder", is(0)));
+            .get("/componentTypes/" + 1))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name", is("Pippo")))
+            .andExpect(jsonPath("$.sortOrder", is(0)));
    }
 
    @Test
@@ -114,22 +113,22 @@ public class ComponentTypeAPITest {
       this.saved = new ComponentType();
       this.saved.setName("Pippo");
       this.saved.setSortOrder(25);
-      this.saved.setId(12);  
-      Mockito.when(componentTypes.save(anyObject())).thenReturn(this.saved);
-      
+      this.saved.setId(12);
+      Mockito.when(componentTypes.save(Mockito.any())).thenReturn(this.saved);
+
       Mockito.when(credentialAPI.sessionIsValid(anyString())).thenReturn(true);
       MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/componentType")
-         .contentType(MediaType.APPLICATION_JSON)
-         .accept(MediaType.APPLICATION_JSON)
-         .header("token", "12345")
-         .content(this.mapper.writeValueAsString(this.dto));
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .header("token", "12345")
+            .content(this.mapper.writeValueAsString(this.dto));
 
       mockMvc.perform(request)
-         .andExpect(status().isOk())
-         .andExpect(jsonPath("$", notNullValue()))
-         .andExpect(jsonPath("$.id", is(12)))
-         .andExpect(jsonPath("$.name", is("Pippo")))
-         .andExpect(jsonPath("$.sortOrder", is(25)));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", notNullValue()))
+            .andExpect(jsonPath("$.id", is(12)))
+            .andExpect(jsonPath("$.name", is("Pippo")))
+            .andExpect(jsonPath("$.sortOrder", is(25)));
    }
 
    @Test
@@ -140,42 +139,42 @@ public class ComponentTypeAPITest {
       this.saved = new ComponentType();
       this.saved.setName("Pippo");
       this.saved.setSortOrder(25);
-      this.saved.setId(12);  
+      this.saved.setId(12);
       Mockito.when(componentTypes.findById(anyInt())).thenReturn(Optional.ofNullable(this.saved));
       doAnswer(returnsFirstArg()).when(componentTypes).save(Mockito.any(ComponentType.class));
-      
+
       Mockito.when(credentialAPI.sessionIsValid(anyString())).thenReturn(true);
       MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/componentType")
-         .contentType(MediaType.APPLICATION_JSON)
-         .accept(MediaType.APPLICATION_JSON)
-         .header("token", "12345")
-         .content(this.mapper.writeValueAsString(this.dto));
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .header("token", "12345")
+            .content(this.mapper.writeValueAsString(this.dto));
 
       mockMvc.perform(request)
-         .andExpect(status().isOk())
-         .andExpect(jsonPath("$", notNullValue()))
-         .andExpect(jsonPath("$.name", is("Pluto")))
-         .andExpect(jsonPath("$.sortOrder", is(15)));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", notNullValue()))
+            .andExpect(jsonPath("$.name", is("Pluto")))
+            .andExpect(jsonPath("$.sortOrder", is(15)));
    }
 
    @Test
-   public void deleteOneTest() throws Exception{
+   public void deleteOneTest() throws Exception {
       Mockito.when(credentialAPI.sessionIsValid(anyString())).thenReturn(true);
       Optional<ComponentType> type = Optional.ofNullable(new ComponentType());
       Mockito.when(componentTypes.findById(anyInt())).thenReturn(type);
       Mockito.when(componentFamilyAPI.deleteCascade(anyInt())).thenReturn(true);
       doNothing().when(componentTypes).deleteById(anyInt());
       MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-         .delete("/componentType/10")
-         .contentType(MediaType.APPLICATION_JSON)
-         .accept(MediaType.APPLICATION_JSON)
-         .header("token", "12345");
+            .delete("/componentType/10")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .header("token", "12345");
       mockMvc.perform(request).andExpect(status().isOk());
-        
+
    }
 
    @Test
-   public void deleteAllTest() throws Exception{
+   public void deleteAllTest() throws Exception {
       Mockito.when(credentialAPI.sessionIsValid(anyString())).thenReturn(true);
       ArrayList<ComponentType> list = new ArrayList<>();
       list.add(new ComponentType());
@@ -187,14 +186,13 @@ public class ComponentTypeAPITest {
       Mockito.when(componentFamilyAPI.deleteCascade(anyInt())).thenReturn(true);
       doNothing().when(componentTypes).deleteById(anyInt());
       MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-         .delete("/deleteAll")
-         .contentType(MediaType.APPLICATION_JSON)
-         .accept(MediaType.APPLICATION_JSON)
-         .header("token", "12345");
+            .delete("/deleteAll")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .header("token", "12345");
       mockMvc.perform(request).andExpect(status().isOk());
-        
-   }
 
+   }
 
    @Test
    public void deleteEntityTest() {
@@ -206,11 +204,10 @@ public class ComponentTypeAPITest {
    }
 
    @Test
-   public void deleteEntityTest2() throws Exception {
+   public void deleteEntityTest2() {
       Optional<ComponentType> type = Optional.ofNullable(null);
       Mockito.when(componentTypes.findById(anyInt())).thenReturn(type);
       assertEquals(false, this.componentTypeAPI.deleteEntity(0));
    }
-
 
 }

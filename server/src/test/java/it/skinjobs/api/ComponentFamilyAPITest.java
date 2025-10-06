@@ -132,7 +132,7 @@ public class ComponentFamilyAPITest {
         this.saved.setType(type);
         this.saved.setId(12);
         Mockito.when(types.findById(anyInt())).thenReturn(Optional.ofNullable(type));
-        Mockito.when(families.save(anyObject())).thenReturn(this.saved);
+        Mockito.when(families.save(Mockito.any())).thenReturn(this.saved);
 
         Mockito.when(credentialAPI.sessionIsValid(anyString())).thenReturn(true);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/componentFamily")
@@ -159,7 +159,8 @@ public class ComponentFamilyAPITest {
         this.saved.setId(12);
         Mockito.when(types.findById(anyInt())).thenReturn(Optional.ofNullable(type));
         Mockito.when(families.findById(anyInt())).thenReturn(Optional.ofNullable(this.saved));
-        Mockito.when(families.save(anyObject())).thenReturn(this.saved);
+        Mockito.when(families.save(Mockito.any())).thenReturn(this.saved);
+
         doAnswer(returnsFirstArg()).when(families).save(Mockito.any(ComponentFamily.class));
 
         Mockito.when(credentialAPI.sessionIsValid(anyString())).thenReturn(true);
@@ -185,7 +186,7 @@ public class ComponentFamilyAPITest {
         doNothing().when(compatibilityConstraintsAPI).deleteCascade(anyInt());
         Mockito.when(componentAPI.deleteCascade(anyInt())).thenReturn(true);
         doNothing().when(families).deleteById(anyInt());
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.delete("/componentFamily/" +10)
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.delete("/componentFamily/" + 10)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .header("token", "12345");
@@ -212,7 +213,5 @@ public class ComponentFamilyAPITest {
         doNothing().when(families).deleteById(anyInt());
         assertEquals(false, this.componentFamilyAPI.deleteEntity(0));
     }
-
-
 
 }
