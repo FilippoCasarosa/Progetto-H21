@@ -92,8 +92,9 @@ public class ComponentAPI extends BaseAPI<Component, ComponentDTO, Integer> {
    @CrossOrigin(origins = "*")
    @GetMapping("/components/{index}")
    public ResponseEntity<Component> getById(@PathVariable Integer index) {
-      Optional<Component> result = this.components.findById(index);
-      return new ResponseEntity<>(result.get(), HttpStatus.OK);
+      return components.findById(index)
+            .map(component -> new ResponseEntity<>(component, HttpStatus.OK))
+            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
    }
 
    @CrossOrigin(origins = "*")

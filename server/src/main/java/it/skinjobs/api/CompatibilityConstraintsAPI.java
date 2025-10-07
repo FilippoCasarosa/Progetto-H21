@@ -119,8 +119,9 @@ public class CompatibilityConstraintsAPI extends BaseAPI<CompatibilityConstraint
    @CrossOrigin(origins = "*")
    @GetMapping("/compatibilityConstraints/{index}")
    public ResponseEntity<CompatibilityConstraint> getById(@PathVariable Integer index) {
-      Optional<CompatibilityConstraint> result = this.compatibilityConstraints.findById(index);
-      return new ResponseEntity<>(result.get(), HttpStatus.OK);
+      return compatibilityConstraints.findById(index)
+            .map(constraint -> new ResponseEntity<>(constraint, HttpStatus.OK))
+            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
    }
 
    /**

@@ -65,19 +65,14 @@ public class ReadySetupAPI extends BaseAPI<ReadySetup, ReadySetupDTO, Integer> {
       return readySetups.findAll();
    }
 
-   /**
-    *
-    * @param index
-    * @return ResponseBody
-    *
-    *         This API returns a ready setup according to its id.
-    */
-   @CrossOrigin(origins = "*")
-   @GetMapping("/readySetups/{index}")
-   public ResponseEntity<ReadySetup> getById(@PathVariable Integer index) {
-      Optional<ReadySetup> result = this.readySetups.findById(index);
-      return new ResponseEntity<>(result.get(), HttpStatus.OK);
-   }
+@CrossOrigin(origins = "*")
+@GetMapping("/readySetups/{index}")
+public ResponseEntity<ReadySetup> getById(@PathVariable Integer index) {
+   return readySetups.findById(index)
+         .map(readySetup -> new ResponseEntity<>(readySetup, HttpStatus.OK))
+         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+}
+
 
    /**
     *
@@ -173,23 +168,28 @@ public class ReadySetupAPI extends BaseAPI<ReadySetup, ReadySetupDTO, Integer> {
       return super.sessionDeleteOperation(headers, index);
    }
 
-   /**
-    * @author Andrei Blindu
-    * @author Jessica Vecchia
-    * @param componentId
-    */
-   @CrossOrigin(origins = "*")
-   public void deleteCascade(Integer componentId) {
-      Iterable<ReadySetup> readySetupList = this.readySetups.findAll();
-      for (ReadySetup readySetUp : readySetupList) {
-         for (Component component : readySetUp.getComponentList()) {
-            if (component.getId() == componentId) {
-               deleteEntity(readySetUp.getId());
-               break;
-            }
+/**
+ * @author Andrei Blindu
+ * @author Jessica Vecchia
+ * @param componentId the ID of the component to cascade delete
+ */
+@CrossOrigin(origins = "*")
+public void deleteCascade(Integer componentId) {
+   if (componentId == null) {
+      return; // Defensive check
+   }
+
+   Iterable<ReadySetup> readySetupList = this.readySetups.findAll();
+   for (ReadySetup readySetUp : readySetupList) {
+      for (Component component : readySetUp.getComponentList()) {
+         if (componentId.equals(component.getId())) {
+            deleteEntity(readySetUp.getId());
+            break;
          }
       }
    }
+}
+
 
    /**
     * @return Boolean

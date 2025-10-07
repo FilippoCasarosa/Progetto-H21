@@ -71,19 +71,22 @@ public class ComponentFamilyAPI extends BaseAPI<ComponentFamily, ComponentFamily
       return componentFamilies.findAll();
    }
 
-   /**
-    *
-    * @param index
-    * @return ResponseBody
-    *
-    *         This API returns a component family according to its id.
-    */
-   @CrossOrigin(origins = "*")
-   @GetMapping("/componentFamilies/{index}")
-   public ResponseEntity<ComponentFamily> getById(@PathVariable Integer index) {
-      Optional<ComponentFamily> result = this.componentFamilies.findById(index);
-      return new ResponseEntity<>(result.get(), HttpStatus.OK);
-   }
+/**
+ *
+ * @param index the ID of the component family to retrieve
+ * @return ResponseEntity containing the component family if found, or 404 otherwise
+ *
+ * This API returns a component family according to its id.
+ */
+@CrossOrigin(origins = "*")
+@GetMapping("/componentFamilies/{index}")
+public ResponseEntity<ComponentFamily> getById(@PathVariable Integer index) {
+   return componentFamilies.findById(index)
+         .map(componentFamily -> new ResponseEntity<>(componentFamily, HttpStatus.OK))
+         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+}
+
+
 
    /**
     *
