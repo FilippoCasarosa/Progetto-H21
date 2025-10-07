@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,37 +28,54 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- 
  * @author Jessica Vecchia
  *
- * The REST controller transforms all the methods into web services and the classes into JSON object. The methods define
- * calls to URLs via HTTP request(POST, GET, PUT, DELETE...)
+ *         The REST controller transforms all the methods into web services and
+ *         the classes into JSON object. The methods define
+ *         calls to URLs via HTTP request(POST, GET, PUT, DELETE...)
  */
 @RestController
 public class CompatibilityConstraintsAPI extends BaseAPI<CompatibilityConstraint, CompatibilityConstraintDTO, Integer> {
    /**
-     * At runtime a concrete class implementing the injected interface will be created(with the same name of the interface)
-     * and through the application context the class will be instantiated via a factory pattern
-     */
-   @Autowired
-   private CompatibilityConstraints compatibilityConstraints;
-
-   @Autowired
-   private ComponentFamilies componentFamilies;
-
-   @Autowired
-   private Components components;
+    * At runtime a concrete class implementing the injected interface will be
+    * created(with the same name of the interface)
+    * and through the application context the class will be instantiated via a
+    * factory pattern
+    */
+   private final CompatibilityConstraints compatibilityConstraints;
+   private final ComponentFamilies componentFamilies;
+   private final Components components;
 
    /**
-     *
-     * @param componentId
-     * @return ResponseEntity
-     *
-     * This API returns all the components that are compatible with a given component.
-     */
-   @CrossOrigin(origins = "*")    
+    * Constructor with dependency injection
+    * 
+    * @param credentialAPI            the credential API for authentication
+    * @param compatibilityConstraints the compatibility constraints repository
+    * @param componentFamilies        the component families repository
+    * @param components               the components repository
+    */
+   public CompatibilityConstraintsAPI(CredentialAPI credentialAPI,
+         CompatibilityConstraints compatibilityConstraints,
+         ComponentFamilies componentFamilies,
+         Components components) {
+      super(credentialAPI);
+      this.compatibilityConstraints = compatibilityConstraints;
+      this.componentFamilies = componentFamilies;
+      this.components = components;
+   }
+
+   /**
+    *
+    * @param componentId
+    * @return ResponseEntity
+    *
+    *         This API returns all the components that are compatible with a given
+    *         component.
+    */
+   @CrossOrigin(origins = "*")
    @GetMapping("/compatibilityConstraints/getByComponentId/{componentId}")
-   public @ResponseBody List<Component> getCompatibleComponentsByComponentId(@PathVariable Integer componentId) {   //@ResponseBody HttpEntity<List<Component>>
+   public @ResponseBody List<Component> getCompatibleComponentsByComponentId(@PathVariable Integer componentId) { // @ResponseBody
+                                                                                                                  // HttpEntity<List<Component>>
       Optional<Component> optional = this.components.findById(componentId);
       if (optional.isPresent()) {
          Component component = optional.get();
@@ -72,20 +88,20 @@ public class CompatibilityConstraintsAPI extends BaseAPI<CompatibilityConstraint
          }
          List<Component> result = new ArrayList<>();
          for (ComponentFamily compatibleFamily : compatibleFamilies) {
-            result.addAll(components.findComponentsByFamilyId(compatibleFamily.getId()));            
+            result.addAll(components.findComponentsByFamilyId(compatibleFamily.getId()));
          }
-         return result;  //return new ResponseEntity ok
+         return result; // return new ResponseEntity ok
       } else {
-         return new ArrayList<>();  //return responseEntity NOT_FOUND
+         return new ArrayList<>(); // return responseEntity NOT_FOUND
       }
    }
 
    /**
-     *
-     * @return ResponseBody
-     *
-     * This API returns all the compatibility constraints in the database.
-     */
+    *
+    * @return ResponseBody
+    *
+    *         This API returns all the compatibility constraints in the database.
+    */
    @CrossOrigin(origins = "*")
    @GetMapping("/compatibilityConstraints")
    public @ResponseBody Iterable<CompatibilityConstraint> getAll() {
@@ -93,12 +109,13 @@ public class CompatibilityConstraintsAPI extends BaseAPI<CompatibilityConstraint
    }
 
    /**
-     *
-     * @param index
-     * @return ResponseBody
-     *
-     * This API returns a specific compatibility constraint row according to its id.
-     */
+    *
+    * @param index
+    * @return ResponseBody
+    *
+    *         This API returns a specific compatibility constraint row according to
+    *         its id.
+    */
    @CrossOrigin(origins = "*")
    @GetMapping("/compatibilityConstraints/{index}")
    public ResponseEntity<CompatibilityConstraint> getById(@PathVariable Integer index) {
@@ -107,13 +124,14 @@ public class CompatibilityConstraintsAPI extends BaseAPI<CompatibilityConstraint
    }
 
    /**
-     *
-     * @param headers
-     * @param compatibilityConstraintDTO
-     * @return ResponseEntity
-     *
-     * This API allows the admin to add a compatibility constraint to the database.
-     */
+    *
+    * @param headers
+    * @param compatibilityConstraintDTO
+    * @return ResponseEntity
+    *
+    *         This API allows the admin to add a compatibility constraint to the
+    *         database.
+    */
    @CrossOrigin(origins = "*")
    @PostMapping("/compatibilityConstraint")
    public ResponseEntity<CompatibilityConstraint> newElement(@RequestHeader Map<String, String> headers,
@@ -138,14 +156,15 @@ public class CompatibilityConstraintsAPI extends BaseAPI<CompatibilityConstraint
    }
 
    /**
-     *
-     * @param headers
-     * @param compatibilityConstraintDTO
-     * @param index
-     * @return ResponseEntity
-     *
-     * This API allows the admin to modify a compatibility constraint to the database.
-     */
+    *
+    * @param headers
+    * @param compatibilityConstraintDTO
+    * @param index
+    * @return ResponseEntity
+    *
+    *         This API allows the admin to modify a compatibility constraint to the
+    *         database.
+    */
    @CrossOrigin(origins = "*")
    @PutMapping("/compatibilityConstraint/{index}")
    public ResponseEntity<CompatibilityConstraint> updateElement(@RequestHeader Map<String, String> headers,
@@ -160,25 +179,28 @@ public class CompatibilityConstraintsAPI extends BaseAPI<CompatibilityConstraint
    }
 
    /**
-     *
-     * @param headers
-     * @param index
-     * @return boolean
-     *
-     * This API allows the admin to delete a compatibility constraint to the database.
-     */
+    *
+    * @param headers
+    * @param index
+    * @return boolean
+    *
+    *         This API allows the admin to delete a compatibility constraint to the
+    *         database.
+    */
    @CrossOrigin(origins = "*")
    @DeleteMapping("/compatibilityConstraint/{index}")
-   public ResponseEntity<Boolean> deleteElement(@RequestHeader Map<String, String> headers, @PathVariable Integer index) {
-     return super.sessionDeleteOperation(headers, index);
+   public ResponseEntity<Boolean> deleteElement(@RequestHeader Map<String, String> headers,
+         @PathVariable Integer index) {
+      return super.sessionDeleteOperation(headers, index);
    }
 
    /**
-     *
-     * @param familyId
-     *
-     * This method is necessary to avoid database inconsistency due to the deletion of a family id.
-     */
+    *
+    * @param familyId
+    *
+    *                 This method is necessary to avoid database inconsistency due
+    *                 to the deletion of a family id.
+    */
    public void deleteCascade(Integer familyId) {
       Iterable<CompatibilityConstraint> compatibilityConstraintList = this.compatibilityConstraints.findAll();
       for (CompatibilityConstraint compatibilityConstraint : compatibilityConstraintList) {
@@ -190,12 +212,12 @@ public class CompatibilityConstraintsAPI extends BaseAPI<CompatibilityConstraint
    }
 
    /**
-     *
-     * @param index
-     * @return boolean
-     *
-     * This method deletes the database entity.
-     */
+    *
+    * @param index
+    * @return boolean
+    *
+    *         This method deletes the database entity.
+    */
    public Boolean deleteEntity(Integer index) {
       if (compatibilityConstraints.findById(index).isPresent()) {
          compatibilityConstraints.deleteById(index);

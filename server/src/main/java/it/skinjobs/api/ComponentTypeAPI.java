@@ -8,7 +8,6 @@ import it.skinjobs.utils.Callable;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,129 +24,98 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author Jessica Vecchia
  *
- * The REST controller transforms all the methods into web services and the classes into JSON object. The methods define
- * calls to URLs via HTTP request(POST, GET, PUT, DELETE...)
+ *         The REST controller transforms all the methods into web services and
+ *         the classes into JSON objects. The methods define calls to URLs via
+ *         HTTP request (POST, GET, PUT, DELETE...).
  */
 @RestController
 public class ComponentTypeAPI extends DeleteAllAPI<ComponentType, ComponentTypeDTO, Integer> {
-   @Autowired
-   private ComponentTypes componentTypes;
 
-   @Autowired
-   private ComponentFamilyAPI componentFamilyAPI;
+   private final ComponentTypes componentTypes;
+   private final ComponentFamilyAPI componentFamilyAPI;
 
    /**
-     *
-     * @return ResponseBody
-     *
-     * This API returns all the component types.
-     */
+    * Constructor with dependency injection
+    * 
+    * @param credentialAPI      the credential API for authentication
+    * @param componentTypes     the repository for component types
+    * @param componentFamilyAPI the API for managing related families
+    */
+   public ComponentTypeAPI(CredentialAPI credentialAPI,
+         ComponentTypes componentTypes,
+         ComponentFamilyAPI componentFamilyAPI) {
+      super(credentialAPI);
+      this.componentTypes = componentTypes;
+      this.componentFamilyAPI = componentFamilyAPI;
+   }
+
    @CrossOrigin(origins = "*")
    @GetMapping("/componentTypes")
    public @ResponseBody Iterable<ComponentType> getAll() {
       return componentTypes.findAllSorted();
    }
 
-   /**
-     *
-     * @param index
-     * @return ResponseBody
-     *
-     * This API returns a component type according to its id.
-     */
    @CrossOrigin(origins = "*")
    @GetMapping("/componentTypes/{index}")
    public ResponseEntity<ComponentType> getById(@PathVariable Integer index) {
       Optional<ComponentType> result = this.componentTypes.findById(index);
-      return new ResponseEntity<>(result.get(), HttpStatus.OK);
+      return result.map(componentType -> new ResponseEntity<>(componentType, HttpStatus.OK))
+            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
    }
 
-   /**
-     *
-     * @param headers
-     * @param componentTypeDTO
-     * @return ResponseEntity
-     *
-     * This API allows the admin to add a new component type.
-     */
    @CrossOrigin(origins = "*")
    @PostMapping("/componentType")
    public ResponseEntity<ComponentType> newElement(@RequestHeader Map<String, String> headers,
          @RequestBody ComponentTypeDTO componentTypeDTO) {
       return super.sessionOperation(headers, componentTypeDTO, new Callable<>() {
          @Override
-         public ResponseEntity<ComponentType> call(@RequestBody ComponentTypeDTO componentTypeDTO) {
+         public ResponseEntity<ComponentType> call(ComponentTypeDTO dto) {
             ComponentType componentType = new ComponentType();
-            componentType.setName(componentTypeDTO.getName());
-            componentType.setSortOrder(componentTypeDTO.getSortOrder());
+            componentType.setName(dto.getName());
+            componentType.setSortOrder(dto.getSortOrder());
             return new ResponseEntity<>(componentTypes.save(componentType), HttpStatus.OK);
          }
       });
-
    }
 
-   /**
-     *
-     * @param headers
-     * @param componentTypeDTO
-     * @param index
-     * @return ResponseEntity
-     *
-     * This API allow the admin to modify a component type
-     */
    @CrossOrigin(origins = "*")
    @PutMapping("/componentType/{index}")
    public ResponseEntity<ComponentType> updateElement(@RequestHeader Map<String, String> headers,
          @RequestBody ComponentTypeDTO componentTypeDTO, @PathVariable Integer index) {
       return super.sessionOperation(headers, componentTypeDTO, new Callable<>() {
          @Override
-         public ResponseEntity<ComponentType> call(ComponentTypeDTO componentTypeDTO) {
-            ComponentType result = componentTypes.findById(index).map(componentType -> {
-                componentType.setName(componentTypeDTO.getName());
-                componentType.setSortOrder(componentTypeDTO.getSortOrder());
-                return componentTypes.save(componentType);
-            }).orElseGet(() -> null);
-                return new ResponseEntity<>(result, HttpStatus.OK);
-          }
+         public ResponseEntity<ComponentType> call(ComponentTypeDTO dto) {
+            return componentTypes.findById(index)
+                  .map(componentType -> {
+                     componentType.setName(dto.getName());
+                     componentType.setSortOrder(dto.getSortOrder());
+                     return new ResponseEntity<>(componentTypes.save(componentType), HttpStatus.OK);
+                  })
+                  .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+         }
       });
-
    }
 
-   /**
-     *
-     * @param headers
-     * @param typeId
-     * @return boolean
-     *
-     * This API allows the admin to delete a component type.
-     */
    @CrossOrigin(origins = "*")
    @DeleteMapping("/componentType/{typeId}")
-   public ResponseEntity<Boolean> deleteElement(@RequestHeader Map<String, String> headers, @PathVariable Integer typeId) {
+   public ResponseEntity<Boolean> deleteElement(@RequestHeader Map<String, String> headers,
+         @PathVariable Integer typeId) {
       return super.sessionDeleteOperation(headers, typeId);
    }
 
-   /**
-     *
-     * @param headers
-     * @return boolean
-     *
-     * This API deletes all the component types and consequentially all the related entities. Even if in this version this is not used
-     * by client, this Api can be useful for later extensions.
-     */
    @CrossOrigin(origins = "*")
    @DeleteMapping("/deleteAll")
    public ResponseEntity<Boolean> deleteAll(@RequestHeader Map<String, String> headers) {
-       return super.sessionDeleteAllOperation(headers, new Callable<>(){
+      return super.sessionDeleteAllOperation(headers, new Callable<>() {
          @Override
-         public ResponseEntity<Boolean> call(ComponentTypeDTO componentTypeDTO) {
+         public ResponseEntity<Boolean> call(ComponentTypeDTO dto) {
             Iterable<ComponentType> componentTypeList = componentTypes.findAll();
-            for(ComponentType componentType: componentTypeList){
+            for (ComponentType componentType : componentTypeList) {
                deleteEntity(componentType.getId());
             }
             return new ResponseEntity<>(true, HttpStatus.OK);
          }
-      });    
+      });
    }
 
    public Boolean deleteEntity(Integer typeId) {
@@ -159,7 +127,4 @@ public class ComponentTypeAPI extends DeleteAllAPI<ComponentType, ComponentTypeD
          return false;
       }
    }
-
-
-
 }

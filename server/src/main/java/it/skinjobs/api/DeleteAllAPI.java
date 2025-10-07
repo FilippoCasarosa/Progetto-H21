@@ -1,10 +1,10 @@
 package it.skinjobs.api;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import it.skinjobs.utils.Callable;
 
 /**
@@ -13,17 +13,27 @@ import it.skinjobs.utils.Callable;
  * @param <U>
  * @param <I>
  *
- * This class allows admin to refresh the database.
+ *            This class allows admin to refresh the database.
  */
 public abstract class DeleteAllAPI<T, U, I> extends BaseAPI<T, U, I> {
 
-   public ResponseEntity<Boolean> sessionDeleteAllOperation(Map<String, String> headers, 
+    /**
+     * Constructor with dependency injection
+     * 
+     * @param credentialAPI the credential API for authentication
+     * @throws NullPointerException if credentialAPI is null
+     */
+    protected DeleteAllAPI(CredentialAPI credentialAPI) {
+        super(credentialAPI);
+    }
+
+    public ResponseEntity<Boolean> sessionDeleteAllOperation(Map<String, String> headers,
             Callable<ResponseEntity<Boolean>, U> callable) {
-        String token = headers.get("token");  
+        String token = headers.get("token");
         if (credentialAPI.sessionIsValid(token)) {
             return callable.call(null);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 }

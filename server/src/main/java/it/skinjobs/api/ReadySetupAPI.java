@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,11 +35,23 @@ import it.skinjobs.utils.Callable;
 @RestController
 public class ReadySetupAPI extends BaseAPI<ReadySetup, ReadySetupDTO, Integer> {
 
-   @Autowired
-   private ReadySetups readySetups;
+   private final ReadySetups readySetups;
+   private final Components components;
 
-   @Autowired
-   private Components components;
+   /**
+    * Constructor with dependency injection
+    * 
+    * @param credentialAPI the credential API for authentication
+    * @param readySetups the ready setups repository
+    * @param components the components repository
+    */
+   public ReadySetupAPI(CredentialAPI credentialAPI,
+                        ReadySetups readySetups,
+                        Components components) {
+      super(credentialAPI);
+      this.readySetups = readySetups;
+      this.components = components;
+   }
 
    /**
     *
