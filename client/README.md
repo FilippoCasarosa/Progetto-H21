@@ -20,6 +20,14 @@ npm cache clean --force
 
 sudo npm install -g @angular/cli
 
+## Run sonar
+
+Save your token in a variable like: `set SONAR_TOKEN=YOUR_TOKEN`
+
+Test your variable: `echo SONAR_TOKEN`
+
+Run sonar `npm run sonar`
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
@@ -44,6 +52,6 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 
-## Generate a component without testFile 
+## Generate a component without testFile
 
 ng g c componentName --skip-tests=true

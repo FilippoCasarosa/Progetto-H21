@@ -19,13 +19,14 @@ export class ListService {
   private totalPrice: number;
   private totalPower: number;
   private powerSupplied: number;
-  public setupState$: Subject<any> = new Subject;
-  public initState$: Subject<any> = new Subject;
+  public setupState$: Subject<any> = new Subject();
+  public initState$: Subject<any> = new Subject();
 
-
-  constructor(private componentTypeService: ComponentTypeService,
-    private compatibilityService: CompatibilityService,
-    private pcComponentsService: PcComponentsService) {
+  constructor(
+    private readonly componentTypeService: ComponentTypeService,
+    private readonly compatibilityService: CompatibilityService,
+    private readonly pcComponentsService: PcComponentsService
+  ) {
     this.initState$.next(false);
     this.initSetup();
     this.componentTypeList = [];
@@ -35,123 +36,114 @@ export class ListService {
     this.powerSupplied = 0;
   }
 
-  //get current
-  public getCurrent(): number{
+  public getCurrent(): number {
     return this.current;
   }
 
-  //get list
-  public getList(): PcComponents[]{
+  public getList(): PcComponents[] {
     return this.list;
   }
 
-  public getTotalPrice(): number{
+  public getTotalPrice(): number {
     return this.totalPrice;
   }
 
-  public getTotalPower(): number{
+  public getTotalPower(): number {
     return this.totalPower;
   }
 
-  public getPowerSupplied(): number{
-    // const regex = RegExp('([^\d]|^)\d{3,4}([^\d]|$)');
-    // if(this.list[this.list.length -1].componentFamily.type.sortOrder === this.componentTypeList.length) {
-    //   return this.powerSupplied = +regex.exec(this.list[this.list.length -1].name);
-    // }else return this.powerSupplied
+  public getPowerSupplied(): number {
     return this.powerSupplied;
   }
 
-  private calculateTotalPrice() {
-    this.totalPrice += this.list[this.list.length -1].price;
+  private calculateTotalPrice(): void {
+    this.totalPrice += this.list[this.list.length - 1].price;
   }
 
-  private calculateTotalPower() {
-    if(this.list[this.list.length -1].componentFamily.type.sortOrder === this.componentTypeList.length){
-      this.powerSupplied = this.list[this.list.length -1].power;
+  private calculateTotalPower(): void {
+    if (this.list[this.list.length - 1].componentFamily.type.sortOrder === this.componentTypeList.length) {
+      this.powerSupplied = this.list[this.list.length - 1].power;
     } else {
-      this.totalPower += this.list[this.list.length -1].power;
+      this.totalPower += this.list[this.list.length - 1].power;
     }
   }
 
-  checkPowerSupplied(): boolean{
+  checkPowerSupplied(): boolean {
     const powerSurplus = 1.2;
-    return ((this.powerSupplied)<(this.totalPower*powerSurplus));
+    return this.powerSupplied < this.totalPower * powerSurplus;
   }
 
-  // 1. scaricare lista dei tipi
   public fetchComponentTypes(): Observable<ComponentType[]> {
     return of(this.componentTypeList);
   }
 
-  // 2. inizializzare il setup, il setup ha uno stato incompleto e completo
-  public initSetup() {
+  public initSetup(): void {
     this.list = [];
     this.setupState$.next(true);
-    this.componentTypeService.getComponentType().
-      subscribe(data => {
-        this.componentTypeList = data;
-        this.initState$.next(true);
-      }
-      );
+    this.componentTypeService.getComponentType().subscribe(data => {
+      this.componentTypeList = data;
+      this.initState$.next(true);
+    });
   }
 
-  // 3. aggiungere il componenti al setup
-  public addComponent(component: PcComponents) {
+  public addComponent(component: PcComponents): void {
     this.list.push(component);
     this.calculateTotalPrice();
     this.calculateTotalPower();
     if (this.list.length === this.componentTypeList.length) {
-      this.setupState$.next(false); // va emesso ad esempio come subject
+      this.setupState$.next(false);
     }
     this.current = this.list.length;
     console.log('list.length:' + this.list.length);
   }
 
-  //get components of pcComponents
   public getComponents(typeId: number): Observable<PcComponents[]> {
     if (this.list.length === 0) {
       return this.fetchPcComponents(typeId);
-    }
-    else {
+    } else {
       return this.fetchCompatiblePcComponents();
     }
-
   }
 
-  //get components of the first type
   private fetchPcComponents(typeId: number): Observable<PcComponents[]> {
     return this.pcComponentsService.getPcComponentsByType(typeId).pipe(
-      tap((data) => console.log()
-      )
+      tap(() => console.log())
     );
   }
 
-  //get components that are compatible wiht the previous one
   private fetchCompatiblePcComponents(): Observable<PcComponents[]> {
-    return this.compatibilityService.getComponentsByCompatibility(this.list[this.list.length -1].id).pipe(
-      tap((data) => console.log()
-      )
-    );
+    return this.compatibilityService
+      .getComponentsByCompatibility(this.list[this.list.length - 1].id)
+      .pipe(tap(() => console.log()));
   }
 
-  public deleteLastComponent(){
-    this.list.splice(this.list.length -1);
+  public deleteLastComponent(): void {
+    this.list.splice(this.list.length - 1);
     if (this.list.length === this.componentTypeList.length) {
-      this.setupState$.next(false); // va emesso ad esempio come subject
+      this.setupState$.next(false);
     }
     this.current = this.list.length;
   }
 
-  // 6. aggiunge un componente secondo un algoritmo, e
-  // passa al successivo
-  //typeId contiene l'id del tipo di componente dove l'utente si e' fermato
-  public autoConfig(typeId: number) {
+  /**
+   * Selects a random component from the array.
+   * Uses Math.random() which is sufficient for non-cryptographic purposes like component selection.
+   * @param components Array of components to choose from
+   * @returns A randomly selected component
+   */
+  private selectRandomComponent(components: PcComponents[]): PcComponents {
+    // Math.random() is safe here: we're selecting PC components, not generating security tokens
+    const randomIndex = Math.floor(Math.random() * components.length);
+    return components[randomIndex];
+  }
+
+  public autoConfig(typeId: number): void {
     this.getComponents(typeId).subscribe(res => {
-      const filteredPcComponents: PcComponents[] = res
-      const choosenComponent: PcComponents = filteredPcComponents[Math.floor(Math.random() * filteredPcComponents.length)];
+      const filteredPcComponents: PcComponents[] = res;
+      const choosenComponent = this.selectRandomComponent(filteredPcComponents);
       this.addComponent(choosenComponent);
       console.log(this.getList());
-      if (this.list.length != this.componentTypeList.length) {
+      if (this.list.length !== this.componentTypeList.length) {
         this.autoConfig(choosenComponent.componentFamily.type.id);
       }
     });

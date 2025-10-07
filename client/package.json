@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "sonar": "sonar-scanner -Dsonar.projectKey=Progetto-H21 -Dsonar.projectName=\"Progetto H21\" -Dsonar.sources=src -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts -Dsonar.host.url=http://localhost:9000 -Dsonar.login=%SONAR_TOKEN%",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
