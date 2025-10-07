@@ -102,6 +102,12 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.10</version>
+				<configuration>
+					<!-- Escludi i metodi generati da Lombok dalla coverage -->
+					<excludes>
+						<exclude>**/*$*</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<!-- Instruments code before running tests -->
 					<execution>
@@ -110,7 +116,6 @@
 							<goal>prepare-agent</goal>
 						</goals>
 					</execution>
-
 					<!-- Generates XML report after tests -->
 					<execution>
 						<id>report</id>

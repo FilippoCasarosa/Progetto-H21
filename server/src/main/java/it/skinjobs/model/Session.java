@@ -1,7 +1,6 @@
 package it.skinjobs.model;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
@@ -16,7 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 /**
- * @author Filippo Casarosa
+ * @author Jessica Vecchia
  *         This class represents a DB Entity in which each authenticated session
  *         is saved. A session
  *         needs an id, token, expireDate and credentialId.
@@ -24,7 +23,6 @@ import javax.persistence.ManyToOne;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 public class Session {
 
    @Id
@@ -40,6 +38,24 @@ public class Session {
    private Date expireDate;
 
    /**
+    * Default constructor that creates a session with unique token and 30-minute
+    * expiration
+    */
+   public Session() {
+      this.token = UUID.randomUUID().toString();
+      this.renewSession();
+   }
+
+   /**
+    * Constructor with credential that creates a session with unique token and sets
+    * expiration
+    */
+   public Session(Credential credential) {
+      this();
+      this.credential = credential;
+   }
+
+   /**
     * @return Boolean
     *         This method checks if a session is expired or not and has to be
     *         called within the
@@ -48,16 +64,6 @@ public class Session {
    public Boolean isExpired() {
       Date date = new Date();
       return date.after(this.expireDate);
-   }
-
-   /**
-    * Custom constructor that creates a session with unique token and sets
-    * expiration
-    */
-   public Session(Credential credential) {
-      this.token = UUID.randomUUID().toString();
-      this.credential = credential;
-      this.renewSession();
    }
 
    /**
