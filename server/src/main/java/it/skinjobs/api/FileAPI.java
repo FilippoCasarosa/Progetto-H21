@@ -21,10 +21,11 @@ import java.util.Map;
 /**
  * REST API for file upload and download operations.
  * 
- * Provides endpoints for uploading files to the server and downloading them later.
+ * Provides endpoints for uploading files to the server and downloading them
+ * later.
  * Uses session validation via CredentialAPI to restrict access.
  * 
- * @author 
+ * @author Filippo Casarosa
  */
 @RestController
 public class FileAPI {
@@ -55,12 +56,18 @@ public class FileAPI {
    @CrossOrigin(origins = Environment.LOCAL_ANGULAR_DOMAIN)
    @PostMapping("/uploadFile")
    public ResponseEntity<UploadFileResponse> uploadFile(@RequestHeader Map<String, String> headers,
-                                                        @RequestParam("file") MultipartFile file) {
+         @RequestParam("file") MultipartFile file) {
+
       String token = headers.get("token");
-      if (!credentialAPI.sessionIsValid(token)) {
+
+      // Use primitive boolean variable for clarity
+      boolean sessionInvalid = !credentialAPI.sessionIsValid(token);
+
+      if (sessionInvalid) {
          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
       }
 
+      // Proceed with file upload
       String fileName = fileStorageService.storeFile(file);
       String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
             .path("/downloadFile/")

@@ -75,7 +75,7 @@ public class CompatibilityConstraintsAPI extends BaseAPI<CompatibilityConstraint
     */
    @CrossOrigin(origins = Environment.LOCAL_ANGULAR_DOMAIN)
    @GetMapping("/compatibilityConstraints/getByComponentId/{componentId}")
-   public @ResponseBody List<Component> getCompatibleComponentsByComponentId(@PathVariable Integer componentId) { // @ResponseBody
+   public List<Component> getCompatibleComponentsByComponentId(@PathVariable Integer componentId) {
                                                                                                                   // HttpEntity<List<Component>>
       Optional<Component> optional = this.components.findById(componentId);
       if (optional.isPresent()) {

@@ -86,13 +86,24 @@ public class CredentialAPI {
     @GetMapping("/logout")
     public ResponseEntity<Boolean> logout(@RequestHeader Map<String, String> headers) {
         String token = headers.get("token");
-        List<Session> sessionList = this.sessions.findByToken(token);
-        if (sessionList.isEmpty() || sessionList.get(0).isExpired()) {
+
+        // Use Optional to avoid get(0) on empty list
+        boolean invalid = this.sessions.findByToken(token)
+                .stream()
+                .findFirst()
+                .map(Session::isExpired)
+                .orElse(true); // treat as invalid if no session found
+
+        if (invalid) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        Session session = sessionList.get(0);
+
+        // At this point, we know the session exists and is valid
+        Session session = this.sessions.findByToken(token).get(0); // safe because list is not empty
         session.setNowExpired();
         this.sessions.save(session);
+
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
+
 }
