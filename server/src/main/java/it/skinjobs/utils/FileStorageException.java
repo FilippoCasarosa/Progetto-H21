@@ -1,7 +1,7 @@
 package it.skinjobs.utils;
 
 /**
- * @author Jessica Vecchia
+ * @author Filippo Casarosa
  */
 public class FileStorageException extends RuntimeException {
    public FileStorageException(String message) {

@@ -8,7 +8,7 @@ import it.skinjobs.utils.Callable;
 
 /**
  *
- * @author Jessica Vecchia
+ * @author Filippo Casarosa
  */
 /**
  *

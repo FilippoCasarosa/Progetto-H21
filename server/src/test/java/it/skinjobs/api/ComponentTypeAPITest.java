@@ -37,7 +37,7 @@ import it.skinjobs.model.ComponentType;
 import it.skinjobs.repository.ComponentTypes;
 
 /**
- * @author Jessica Vecchia
+ * @author Filippo Casarosa
  */
 
 @SpringBootTest(classes = { ConfiguratorApplicationAPI.class, H2TestProfileConfig.class })

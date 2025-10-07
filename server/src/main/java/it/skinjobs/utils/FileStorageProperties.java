@@ -3,7 +3,7 @@ package it.skinjobs.utils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * @author Jessica Vecchia
+ * @author Filippo Casarosa
  */
 @ConfigurationProperties(prefix = "file")    //file.uploadDr 
 public class FileStorageProperties {

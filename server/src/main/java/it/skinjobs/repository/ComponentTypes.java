@@ -8,7 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 import it.skinjobs.model.ComponentType;
 
 /**
- * @author Jessica Vecchia
+ * @author Filippo Casarosa
  */
 
 /**

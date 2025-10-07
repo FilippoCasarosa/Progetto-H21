@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.Test;
 
 /**
- * @author Jessica Vecchia
+ * @author Filippo Casarosa
  */
 
 @SpringBootTest

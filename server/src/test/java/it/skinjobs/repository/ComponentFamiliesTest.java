@@ -19,7 +19,7 @@ import it.skinjobs.model.ComponentFamily;
 import it.skinjobs.model.ComponentType;
 
 /**
- * @author Jessica Vecchia
+ * @author Filippo Casarosa
  */
 
 @SpringBootTest(classes = { H2TestProfileConfig.class })

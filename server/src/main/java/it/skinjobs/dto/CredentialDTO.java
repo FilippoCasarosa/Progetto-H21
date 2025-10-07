@@ -1,5 +1,5 @@
 /**
-@author Jessica Vecchia
+@author Filippo Casarosa
  */
 
 package it.skinjobs.dto;

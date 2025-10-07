@@ -1,5 +1,5 @@
 /**
-@author Jessica Vecchia
+@author Filippo Casarosa
 @author Andrei Blindu
  */
 package it.skinjobs.api;

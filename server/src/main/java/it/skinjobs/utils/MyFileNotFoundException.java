@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * @author Jessica Vecchia
+ * @author Filippo Casarosa
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class MyFileNotFoundException extends RuntimeException {

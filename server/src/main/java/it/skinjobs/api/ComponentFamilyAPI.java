@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author Jessica Vecchia
+ * @author Filippo Casarosa
  *
  *         The REST controller transforms all the methods into web services and
  *         the classes into JSON object. The methods define
@@ -166,7 +166,7 @@ public ResponseEntity<ComponentFamily> getById(@PathVariable Integer index) {
 
    /**
     * @author Andrei Blindu
-    * @author Jessica Vecchia
+    * @author Filippo Casarosa
     * @param typeId
     * @return Boolean
     */
@@ -180,7 +180,7 @@ public ResponseEntity<ComponentFamily> getById(@PathVariable Integer index) {
 
    /**
     * @author Andrei Blindu
-    * @author Jessica Vecchia
+    * @author Filippo Casarosa
     * @param familyId
     * @return Boolean
     */

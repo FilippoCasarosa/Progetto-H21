@@ -1,7 +1,7 @@
 package it.skinjobs.utils;
 
 /**
- * @author Jessica Vecchia
+ * @author Filippo Casarosa
  * 
  * This Object is created in order to implement the baseApi method sessionOperation (checking if
  * a session is valid). Taking inspiration from the Strategy Pattern the code is structured to make

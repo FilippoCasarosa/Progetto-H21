@@ -33,7 +33,7 @@ import it.skinjobs.repository.CompatibilityConstraints;
 import it.skinjobs.repository.Components;
 
 /**
- * @author Jessica Vecchia
+ * @author Filippo Casarosa
  */
 
 @SpringBootTest(classes = { ConfiguratorApplicationAPI.class, H2TestProfileConfig.class })

@@ -8,7 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 import it.skinjobs.model.CompatibilityConstraint;
 
 /**
- * @author Jessica Vecchia
+ * @author Filippo Casarosa
  */
 
 /**

@@ -8,7 +8,7 @@ import it.skinjobs.model.Component;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * @author Jessica Vecchia
+ * @author Filippo Casarosa
  */
 
 @SpringBootTest

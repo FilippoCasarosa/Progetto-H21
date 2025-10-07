@@ -5,7 +5,7 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 
 /**
-* @author Jessica Vecchia
+* @author Filippo Casarosa
 */
 
 /**

@@ -18,7 +18,7 @@ import it.skinjobs.config.H2TestProfileConfig;
 import it.skinjobs.model.Credential;
 
 /**
- * @author Jessica Vecchia
+ * @author Filippo Casarosa
  */
 
 @SpringBootTest(classes = { H2TestProfileConfig.class })

@@ -3,7 +3,7 @@ package it.skinjobs.utils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * @author Jessica Vecchia
+ * @author Filippo Casarosa
  * This class sets via application.properties file the default name and password of the
  * administratior as admin, admin,
  */

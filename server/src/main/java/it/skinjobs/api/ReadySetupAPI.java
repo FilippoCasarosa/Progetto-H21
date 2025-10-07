@@ -27,7 +27,7 @@ import it.skinjobs.utils.Callable;
 import it.skinjobs.utils.Environment;
 
 /**
- * @author Jessica Vecchia
+ * @author Filippo Casarosa
  *
  *         The REST controller transforms all the methods into web services and
  *         the classes into JSON object. The methods define calls to URLs via
@@ -171,7 +171,7 @@ public ResponseEntity<ReadySetup> getById(@PathVariable Integer index) {
 
 /**
  * @author Andrei Blindu
- * @author Jessica Vecchia
+ * @author Filippo Casarosa
  * @param componentId the ID of the component to cascade delete
  */
 @CrossOrigin(origins = Environment.LOCAL_ANGULAR_DOMAIN)

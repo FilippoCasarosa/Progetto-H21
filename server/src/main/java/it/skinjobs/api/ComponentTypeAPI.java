@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author Jessica Vecchia
+ * @author Filippo Casarosa
  *
  *         The REST controller transforms all the methods into web services and
  *         the classes into JSON objects. The methods define calls to URLs via

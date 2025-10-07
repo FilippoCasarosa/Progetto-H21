@@ -5,7 +5,7 @@ import java.util.Set;
 /**
  
 
- * @author Jessica Vecchia
+ * @author Filippo Casarosa
    @author Filippo Maria Rognoni 
    @author Andrei Blindu
  */
