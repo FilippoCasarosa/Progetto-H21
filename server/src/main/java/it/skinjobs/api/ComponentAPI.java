@@ -61,7 +61,7 @@ public class ComponentAPI extends BaseAPI<Component, ComponentDTO, Integer> {
     *
     *         This API returns all the components in the database.
     */
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
    @GetMapping("/components")
    public @ResponseBody Iterable<Component> getAll() {
       return components.findAll();
@@ -74,7 +74,7 @@ public class ComponentAPI extends BaseAPI<Component, ComponentDTO, Integer> {
     *
     *         This API return a component according to its id.
     */
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
    @GetMapping("/component/{index}")
    public ResponseEntity<Iterable<Component>> getAllByType(@PathVariable Integer index) {
       List<Component> result = components.findByTypeId(index);
@@ -89,7 +89,7 @@ public class ComponentAPI extends BaseAPI<Component, ComponentDTO, Integer> {
     *
     *         This API returns components according to their component type.
     */
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
    @GetMapping("/components/{index}")
    public ResponseEntity<Component> getById(@PathVariable Integer index) {
       return components.findById(index)
@@ -97,7 +97,7 @@ public class ComponentAPI extends BaseAPI<Component, ComponentDTO, Integer> {
             .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
    }
 
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
 
    /**
     *
@@ -137,7 +137,7 @@ public class ComponentAPI extends BaseAPI<Component, ComponentDTO, Integer> {
     *
     *         This API allows the admin to modify a component.
     */
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
    @PutMapping("/component/{index}")
    public ResponseEntity<Component> updateElement(@RequestHeader Map<String, String> headers,
          @RequestBody ComponentDTO componentDTO, final @PathVariable Integer index) {
@@ -169,7 +169,7 @@ public class ComponentAPI extends BaseAPI<Component, ComponentDTO, Integer> {
     *
     *         This API allows the admin to delete a component.
     */
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
    @DeleteMapping("/component/{index}")
    public ResponseEntity<Boolean> deleteElement(@RequestHeader Map<String, String> headers,
          @PathVariable Integer index) {

@@ -59,13 +59,13 @@ public class ReadySetupAPI extends BaseAPI<ReadySetup, ReadySetupDTO, Integer> {
     *
     *         This API returns all the ready setup.
     */
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
    @GetMapping("/readySetups")
    public @ResponseBody Iterable<ReadySetup> getAll() {
       return readySetups.findAll();
    }
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
 @GetMapping("/readySetups/{index}")
 public ResponseEntity<ReadySetup> getById(@PathVariable Integer index) {
    return readySetups.findById(index)
@@ -82,7 +82,7 @@ public ResponseEntity<ReadySetup> getById(@PathVariable Integer index) {
     *
     *         This API allows the admin to add a new ready setup.
     */
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
    @PostMapping("/readySetup")
    public ResponseEntity<ReadySetup> newElement(@RequestHeader Map<String, String> headers,
          @RequestBody ReadySetupDTO readySetupDTO) {
@@ -120,7 +120,7 @@ public ResponseEntity<ReadySetup> getById(@PathVariable Integer index) {
     *
     *         This API allows the admin to modify a ready setup.
     */
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
    @PutMapping("/readySetup/{index}")
    public ResponseEntity<ReadySetup> updateElement(@RequestHeader Map<String, String> headers,
          @RequestBody ReadySetupDTO readySetupDTO, final @PathVariable Integer index) {
@@ -161,7 +161,7 @@ public ResponseEntity<ReadySetup> getById(@PathVariable Integer index) {
     *
     *         This API allows the admin to delete a ready setup.
     */
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
    @DeleteMapping("/readySetup/{index}")
    public ResponseEntity<Boolean> deleteElement(@RequestHeader Map<String, String> headers,
          @PathVariable Integer index) {
@@ -173,7 +173,7 @@ public ResponseEntity<ReadySetup> getById(@PathVariable Integer index) {
  * @author Jessica Vecchia
  * @param componentId the ID of the component to cascade delete
  */
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
 public void deleteCascade(Integer componentId) {
    if (componentId == null) {
       return; // Defensive check

@@ -65,7 +65,7 @@ public class ComponentFamilyAPI extends BaseAPI<ComponentFamily, ComponentFamily
     *
     *         This API returns all the component families.
     */
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
    @GetMapping("/componentFamilies")
    public @ResponseBody Iterable<ComponentFamily> getAll() {
       return componentFamilies.findAll();
@@ -78,7 +78,7 @@ public class ComponentFamilyAPI extends BaseAPI<ComponentFamily, ComponentFamily
  *
  * This API returns a component family according to its id.
  */
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
 @GetMapping("/componentFamilies/{index}")
 public ResponseEntity<ComponentFamily> getById(@PathVariable Integer index) {
    return componentFamilies.findById(index)
@@ -96,7 +96,7 @@ public ResponseEntity<ComponentFamily> getById(@PathVariable Integer index) {
     *
     *         This API allows the admin to add a component family.
     */
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
    @PostMapping("/componentFamily")
    public ResponseEntity<ComponentFamily> newElement(@RequestHeader Map<String, String> headers,
          @RequestBody ComponentFamilyDTO componentFamilyDTO) {
@@ -126,7 +126,7 @@ public ResponseEntity<ComponentFamily> getById(@PathVariable Integer index) {
     *
     *         This API allows the admin to modify a component family.
     */
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
    @PutMapping("/componentFamily/{index}")
    public ResponseEntity<ComponentFamily> updateElement(@RequestHeader Map<String, String> headers,
          @RequestBody ComponentFamilyDTO componentFamilyDTO, final @PathVariable Integer index) {
@@ -156,7 +156,7 @@ public ResponseEntity<ComponentFamily> getById(@PathVariable Integer index) {
     *
     *         This API allows the admin to delete a component family.
     */
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
    @DeleteMapping("/componentFamily/{index}")
    public ResponseEntity<Boolean> deleteElement(@RequestHeader Map<String, String> headers,
          @PathVariable Integer index) {

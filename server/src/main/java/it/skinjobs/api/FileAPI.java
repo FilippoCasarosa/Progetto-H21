@@ -51,7 +51,7 @@ public class FileAPI {
     * @param file    multipart file to upload
     * @return response with file details or unauthorized status
     */
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
    @PostMapping("/uploadFile")
    public ResponseEntity<UploadFileResponse> uploadFile(@RequestHeader Map<String, String> headers,
                                                         @RequestParam("file") MultipartFile file) {
@@ -79,7 +79,7 @@ public class FileAPI {
     * @param request  HTTP servlet request (used to detect MIME type)
     * @return response containing the file resource
     */
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
    @GetMapping("/downloadFile/{fileName:.+}")
    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
       Resource resource = fileStorageService.loadFileAsResource(fileName);

@@ -49,13 +49,13 @@ public class ComponentTypeAPI extends DeleteAllAPI<ComponentType, ComponentTypeD
       this.componentFamilyAPI = componentFamilyAPI;
    }
 
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
    @GetMapping("/componentTypes")
    public @ResponseBody Iterable<ComponentType> getAll() {
       return componentTypes.findAllSorted();
    }
 
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
    @GetMapping("/componentTypes/{index}")
    public ResponseEntity<ComponentType> getById(@PathVariable Integer index) {
       Optional<ComponentType> result = this.componentTypes.findById(index);
@@ -63,7 +63,7 @@ public class ComponentTypeAPI extends DeleteAllAPI<ComponentType, ComponentTypeD
             .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
    }
 
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
    @PostMapping("/componentType")
    public ResponseEntity<ComponentType> newElement(@RequestHeader Map<String, String> headers,
          @RequestBody ComponentTypeDTO componentTypeDTO) {
@@ -78,7 +78,7 @@ public class ComponentTypeAPI extends DeleteAllAPI<ComponentType, ComponentTypeD
       });
    }
 
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
    @PutMapping("/componentType/{index}")
    public ResponseEntity<ComponentType> updateElement(@RequestHeader Map<String, String> headers,
          @RequestBody ComponentTypeDTO componentTypeDTO, @PathVariable Integer index) {
@@ -96,14 +96,14 @@ public class ComponentTypeAPI extends DeleteAllAPI<ComponentType, ComponentTypeD
       });
    }
 
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
    @DeleteMapping("/componentType/{typeId}")
    public ResponseEntity<Boolean> deleteElement(@RequestHeader Map<String, String> headers,
          @PathVariable Integer typeId) {
       return super.sessionDeleteOperation(headers, typeId);
    }
 
-   @CrossOrigin(origins = "*")
+   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
    @DeleteMapping("/deleteAll")
    public ResponseEntity<Boolean> deleteAll(@RequestHeader Map<String, String> headers) {
       return super.sessionDeleteAllOperation(headers, new Callable<>() {

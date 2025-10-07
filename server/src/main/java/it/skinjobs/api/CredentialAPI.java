@@ -46,7 +46,7 @@ public class CredentialAPI {
         return adminCredential;
     }
 
-    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
     @PostMapping("/login")
     public ResponseEntity<Session> login(@RequestBody CredentialDTO credentialDTO) {
         List<Credential> credentialList = this.credentials.findByName(credentialDTO.getName());
@@ -81,7 +81,7 @@ public class CredentialAPI {
         return false;
     }
 
-    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
     @GetMapping("/logout")
     public ResponseEntity<Boolean> logout(@RequestHeader Map<String, String> headers) {
         String token = headers.get("token");
