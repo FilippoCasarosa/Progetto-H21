@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "sonar": "sonar-scanner -Dsonar.projectKey=Progetto-H21 -Dsonar.projectName=\"Progetto H21\" -Dsonar.sources=src -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts -Dsonar.host.url=http://localhost:9000 -Dsonar.login=%SONAR_TOKEN%",
-    "start": "ng serve",
+    "start": "set NODE_OPTIONS=--openssl-legacy-provider && ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -45,6 +45,8 @@
     "protractor": "^7.0.0",
     "ts-node": "^10.4.0",
     "tslint": "^6.1.3",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "webpack": "^5.102.1",
+    "webpack-cli": "^4.10.0"
   }
 }
