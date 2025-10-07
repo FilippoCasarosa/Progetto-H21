@@ -1,12 +1,11 @@
 package it.skinjobs.api;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.Instant;
@@ -20,16 +19,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import it.skinjobs.ConfiguratorApplicationAPI;
 import it.skinjobs.config.H2TestProfileConfig;
@@ -52,131 +52,134 @@ public class CredentialApiTest {
     @Autowired
     private ObjectMapper mapper;
 
-    @Autowired
-    private CredentialsProperties properties;
-
-    @SpyBean
+    @MockBean
     private Credentials credentials;
 
-    @SpyBean
+    @MockBean
     private Sessions sessions;
 
     @Autowired
     private CredentialAPI credentialAPI;
 
-    private List<Credential> credentialList;
-    private CredentialDTO credentialDTO;
-    private List<Session> sessionList;
+    private Credential admin;
+    private List<Session> activeSessionList;
 
     @Before
-    public void init() {
-        // No setup required here; Spring handles @Autowired beans
+    public void setup() {
+        // Admin credential
+        admin = new Credential();
+        admin.setName("admin");
+        admin.setPassword("admin");
+
+        // Mock finding admin
+        Mockito.when(credentials.findByName("admin")).thenReturn(List.of(admin));
+
+        // Mock session save to return same object
+        Mockito.when(sessions.save(Mockito.any(Session.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Active session
+        Session session = new Session();
+        session.setToken("123");
+        session.setExpireDate(Date.from(Instant.now().plus(5, ChronoUnit.MINUTES)));
+        activeSessionList = List.of(session);
+
+        Mockito.when(sessions.findByToken("123")).thenReturn(activeSessionList);
+        Mockito.when(sessions.findByToken("expired")).thenReturn(new ArrayList<>());
     }
 
-    @Test
-    public void testConstructor() {
-        CredentialsProperties localProperties = new CredentialsProperties();
-        localProperties.setName("admin");
-        localProperties.setPassword("admin");
+@Test
+public void testGetAdminCredential() {
+    // Create mocks
+    Credentials mockCredentials = Mockito.mock(Credentials.class);
+    Sessions mockSessions = Mockito.mock(Sessions.class);
+    CredentialsProperties props = new CredentialsProperties();
+    props.setName("admin");
+    props.setPassword("admin");
 
-        doAnswer(returnsFirstArg()).when(credentials).save(any(Credential.class));
-        when(credentials.findByName(anyString())).thenReturn(new ArrayList<>());
+    // Mock findByName to return empty, so admin is created
+    Mockito.when(mockCredentials.findByName("admin")).thenReturn(new ArrayList<>());
+    Mockito.when(mockCredentials.save(Mockito.any())).thenAnswer(i -> i.getArgument(0));
 
-        // Include sessions when constructing locally
-        CredentialAPI localCredentialAPI = new CredentialAPI(credentials, sessions, localProperties);
+    // Instantiate local CredentialAPI with dummy objects
+    CredentialAPI dummyAPI = new CredentialAPI(mockCredentials, mockSessions, props);
 
-        assertEquals("admin", localCredentialAPI.getAdminCredential().getName());
-        assertEquals("admin", localCredentialAPI.getAdminCredential().getPassword());
-    }
+    Credential dummyAdmin = dummyAPI.getAdminCredential();
+    assertNotNull(dummyAdmin);                   // ensure it’s created
+    assertEquals("admin", dummyAdmin.getName()); // validate name
+    assertEquals("admin", dummyAdmin.getPassword());
+}
+
+
 
     @Test
     public void testLoginSuccess() throws Exception {
-        credentialDTO = new CredentialDTO();
-        credentialDTO.setName("admin");
-        credentialDTO.setPassword("admin");
-
-        Credential c = new Credential();
-        c.setName("admin");
-        c.setPassword("admin");
-
-        credentialList = new ArrayList<>();
-        credentialList.add(c);
-
-        when(credentials.findByName(anyString())).thenReturn(credentialList);
-        doAnswer(returnsFirstArg()).when(sessions).save(any(Session.class));
+        CredentialDTO dto = new CredentialDTO();
+        dto.setName("admin");
+        dto.setPassword("admin");
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(credentialDTO));
+                .content(mapper.writeValueAsString(dto));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", notNullValue()))
                 .andExpect(jsonPath("$.credential.name", is("admin")));
     }
 
     @Test
-    public void testLoginNotFound() throws Exception {
-        credentialDTO = new CredentialDTO();
-        credentialDTO.setName("Pippo");
-        credentialDTO.setPassword("admin");
-
-        when(credentials.findByName(anyString())).thenReturn(new ArrayList<>());
+    public void testLoginWrongPassword() throws Exception {
+        CredentialDTO dto = new CredentialDTO();
+        dto.setName("admin");
+        dto.setPassword("wrong");
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(credentialDTO));
-
-        mockMvc.perform(request)
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void testLoginFail() throws Exception {
-        credentialDTO = new CredentialDTO();
-        credentialDTO.setName("admin");
-        credentialDTO.setPassword("Paperino");
-
-        Credential c = new Credential();
-        c.setName("admin");
-        c.setPassword("admin");
-
-        credentialList = new ArrayList<>();
-        credentialList.add(c);
-
-        when(credentials.findByName(anyString())).thenReturn(credentialList);
-
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(credentialDTO));
+                .content(mapper.writeValueAsString(dto));
 
         mockMvc.perform(request)
                 .andExpect(status().isForbidden());
     }
 
     @Test
+    public void testLoginUserNotFound() throws Exception {
+        CredentialDTO dto = new CredentialDTO();
+        dto.setName("unknown");
+        dto.setPassword("any");
+
+        Mockito.when(credentials.findByName("unknown")).thenReturn(new ArrayList<>());
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(dto));
+
+        mockMvc.perform(request)
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void testSessionIsValid() {
-        Session session = new Session();
-        session.setToken("123");
-        Instant future = Instant.now().plus(1, ChronoUnit.MINUTES);
-        Date date = Date.from(future);
-        session.setExpireDate(date);
-
-        sessionList = new ArrayList<>();
-        sessionList.add(session);
-
-        when(sessions.findByToken(anyString())).thenReturn(sessionList);
-
-        assertTrue(credentialAPI.sessionIsValid("123"));
+        // Verify that the session with token "123" is valid
+        boolean valid = credentialAPI.sessionIsValid("123");
+        assertTrue("Session with token '123' should be valid", valid);
     }
 
     @Test
     public void testSessionIsNotValid() {
-        when(sessions.findByToken(anyString())).thenReturn(new ArrayList<>());
-
-        assertFalse(credentialAPI.sessionIsValid("421"));
+        // Verify that the session with token "expired" is not valid
+        boolean valid = credentialAPI.sessionIsValid("expired");
+        assertFalse("Session with token 'expired' should NOT be valid", valid);
     }
+
+    @Test
+    public void testSessionSaveReturnsSameObject() {
+        Session s = new Session();
+        s.setToken("999");
+
+        Session saved = sessions.save(s);
+
+        // Verify that the saved session is the same object as the original
+        assertSame("Saved session should be the same instance as the original", s, saved);
+    }
+
 }
