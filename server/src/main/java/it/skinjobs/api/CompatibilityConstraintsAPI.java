@@ -8,6 +8,7 @@ import it.skinjobs.repository.CompatibilityConstraints;
 import it.skinjobs.repository.ComponentFamilies;
 import it.skinjobs.repository.Components;
 import it.skinjobs.utils.Callable;
+import it.skinjobs.utils.Environment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,7 @@ public class CompatibilityConstraintsAPI extends BaseAPI<CompatibilityConstraint
     *         This API returns all the components that are compatible with a given
     *         component.
     */
-   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
+   @CrossOrigin(origins = Environment.LOCAL_ANGULAR_DOMAIN)
    @GetMapping("/compatibilityConstraints/getByComponentId/{componentId}")
    public @ResponseBody List<Component> getCompatibleComponentsByComponentId(@PathVariable Integer componentId) { // @ResponseBody
                                                                                                                   // HttpEntity<List<Component>>
@@ -102,7 +103,7 @@ public class CompatibilityConstraintsAPI extends BaseAPI<CompatibilityConstraint
     *
     *         This API returns all the compatibility constraints in the database.
     */
-   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
+   @CrossOrigin(origins = Environment.LOCAL_ANGULAR_DOMAIN)
    @GetMapping("/compatibilityConstraints")
    public @ResponseBody Iterable<CompatibilityConstraint> getAll() {
       return this.compatibilityConstraints.findAll();
@@ -116,7 +117,7 @@ public class CompatibilityConstraintsAPI extends BaseAPI<CompatibilityConstraint
     *         This API returns a specific compatibility constraint row according to
     *         its id.
     */
-   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
+   @CrossOrigin(origins = Environment.LOCAL_ANGULAR_DOMAIN)
    @GetMapping("/compatibilityConstraints/{index}")
    public ResponseEntity<CompatibilityConstraint> getById(@PathVariable Integer index) {
       return compatibilityConstraints.findById(index)
@@ -133,7 +134,7 @@ public class CompatibilityConstraintsAPI extends BaseAPI<CompatibilityConstraint
     *         This API allows the admin to add a compatibility constraint to the
     *         database.
     */
-   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
+   @CrossOrigin(origins = Environment.LOCAL_ANGULAR_DOMAIN)
    @PostMapping("/compatibilityConstraint")
    public ResponseEntity<CompatibilityConstraint> newElement(@RequestHeader Map<String, String> headers,
          @RequestBody CompatibilityConstraintDTO compatibilityConstraintDTO) {
@@ -166,7 +167,7 @@ public class CompatibilityConstraintsAPI extends BaseAPI<CompatibilityConstraint
     *         This API allows the admin to modify a compatibility constraint to the
     *         database.
     */
-   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
+   @CrossOrigin(origins = Environment.LOCAL_ANGULAR_DOMAIN)
    @PutMapping("/compatibilityConstraint/{index}")
    public ResponseEntity<CompatibilityConstraint> updateElement(@RequestHeader Map<String, String> headers,
          @RequestBody CompatibilityConstraintDTO compatibilityConstraintDTO, final @PathVariable Integer index) {
@@ -188,7 +189,7 @@ public class CompatibilityConstraintsAPI extends BaseAPI<CompatibilityConstraint
     *         This API allows the admin to delete a compatibility constraint to the
     *         database.
     */
-   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
+   @CrossOrigin(origins = Environment.LOCAL_ANGULAR_DOMAIN)
    @DeleteMapping("/compatibilityConstraint/{index}")
    public ResponseEntity<Boolean> deleteElement(@RequestHeader Map<String, String> headers,
          @PathVariable Integer index) {

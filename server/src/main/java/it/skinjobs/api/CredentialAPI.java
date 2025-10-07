@@ -13,6 +13,7 @@ import it.skinjobs.model.Session;
 import it.skinjobs.repository.Credentials;
 import it.skinjobs.repository.Sessions;
 import it.skinjobs.utils.CredentialsProperties;
+import it.skinjobs.utils.Environment;
 
 @RestController
 public class CredentialAPI {
@@ -46,7 +47,7 @@ public class CredentialAPI {
         return adminCredential;
     }
 
-    @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
+    @CrossOrigin(origins = Environment.LOCAL_ANGULAR_DOMAIN)
     @PostMapping("/login")
     public ResponseEntity<Session> login(@RequestBody CredentialDTO credentialDTO) {
         List<Credential> credentialList = this.credentials.findByName(credentialDTO.getName());
@@ -81,7 +82,7 @@ public class CredentialAPI {
         return false;
     }
 
-    @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
+    @CrossOrigin(origins = Environment.LOCAL_ANGULAR_DOMAIN)
     @GetMapping("/logout")
     public ResponseEntity<Boolean> logout(@RequestHeader Map<String, String> headers) {
         String token = headers.get("token");

@@ -1,6 +1,7 @@
 package it.skinjobs.api;
 
 import it.skinjobs.dto.UploadFileResponse;
+import it.skinjobs.utils.Environment;
 import it.skinjobs.utils.FileStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +52,7 @@ public class FileAPI {
     * @param file    multipart file to upload
     * @return response with file details or unauthorized status
     */
-   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
+   @CrossOrigin(origins = Environment.LOCAL_ANGULAR_DOMAIN)
    @PostMapping("/uploadFile")
    public ResponseEntity<UploadFileResponse> uploadFile(@RequestHeader Map<String, String> headers,
                                                         @RequestParam("file") MultipartFile file) {
@@ -79,7 +80,7 @@ public class FileAPI {
     * @param request  HTTP servlet request (used to detect MIME type)
     * @return response containing the file resource
     */
-   @CrossOrigin(origins = AppConstants.LOCAL_ANGULAR_DOMAIN)
+   @CrossOrigin(origins = Environment.LOCAL_ANGULAR_DOMAIN)
    @GetMapping("/downloadFile/{fileName:.+}")
    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
       Resource resource = fileStorageService.loadFileAsResource(fileName);
