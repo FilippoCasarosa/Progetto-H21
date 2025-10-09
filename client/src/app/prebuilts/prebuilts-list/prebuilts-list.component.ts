@@ -18,11 +18,13 @@ export class PrebuiltsListComponent implements OnInit, OnDestroy {
   loadedPrebuilts: Prebuilt[] = [];
   prebuilt: Prebuilt;
   isFetching = false;
-  error = null;
+  error: string = null;;
   private errorSub: Subscription;
 
-  constructor(private prebuiltService: PrebuiltService,
-              private dialog: MatDialog) { }
+  constructor(
+    private readonly prebuiltService: PrebuiltService,
+    private readonly dialog: MatDialog
+  ) { }
 
   /**
    * All'avvio del componente prebuilts, vengono mostrati tutti i computer preassemblati
@@ -61,11 +63,11 @@ export class PrebuiltsListComponent implements OnInit, OnDestroy {
    * Resetta l'errore a null
    * @author Filippo Casarosa
    */
-  onHandleError(){
+  onHandleError() {
     this.error = null;
   }
 
-  onDetail(): number[]{
+  onDetail(): number[] {
     this.prebuiltService.getPrebuilt(this.loadedPrebuilts[0].id).subscribe((prebuilt) => {
       this.prebuilt = prebuilt;
     })
@@ -76,7 +78,7 @@ export class PrebuiltsListComponent implements OnInit, OnDestroy {
    * Quando viene selezionato il prebuilt, apre un dialog box per confermare la scelta
    * @author Filippo Casarosa
    */
-  onPrebuiltSelected(){
+  onPrebuiltSelected() {
     const dialogRef = this.dialog.open(DialogComponent, {
       width: '330px',
       // data: {name: this.name, animal: this.animal}

@@ -17,14 +17,14 @@ import { CompatibilityService } from 'src/app/shared/services/compatibility.serv
 export class EditCompatibilityComponent implements OnInit {
   loadedCompatibility: Compatibility;
   isFetching = false;
-  error = null;
+  error: string = null;;
   private errorSub: Subscription;
 
   @ViewChild('f', { static: false }) updateForm: NgForm;
 
   constructor(private compatibilityService: CompatibilityService,
-              private route: ActivatedRoute,
-              private router: Router) {}
+    private route: ActivatedRoute,
+    private router: Router) { }
 
   ngOnInit(): void {
     this.fetchPcComponent();
@@ -34,10 +34,10 @@ export class EditCompatibilityComponent implements OnInit {
     this.loadedCompatibility.componentFamilyId1 = this.updateForm.value.id1;
     this.loadedCompatibility.componentFamilyId2 = this.updateForm.value.id2;
     this.compatibilityService.updateCompatibility(this.loadedCompatibility, this.loadedCompatibility.id).subscribe();
-    this.router.navigate(['/products/pc-components'], {relativeTo: this.route});
+    this.router.navigate(['/products/pc-components'], { relativeTo: this.route });
   }
 
-  fetchPcComponent(){
+  fetchPcComponent() {
     this.errorSub = this.compatibilityService.error.subscribe(
       errorMessage => {
         this.error = errorMessage;

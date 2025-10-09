@@ -3,8 +3,9 @@
  * @author Filippo Casarosa
  */
 
-export class ComponentType {
-  public id: number;
-  public name: string;
-  public sortOrder: number;
+export interface ComponentType {
+  id: number;
+  name: string;
+  sortOrder: number;
+  active: boolean;
 }

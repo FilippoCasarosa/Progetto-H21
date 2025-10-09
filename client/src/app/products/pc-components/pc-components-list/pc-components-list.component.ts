@@ -18,10 +18,10 @@ import { PcComponentsService } from 'src/app/shared/services/pc-components.servi
   templateUrl: './pc-components-list.component.html',
   styleUrls: ['./pc-components-list.component.scss']
 })
-export class PcComponentsListComponent implements OnInit, OnDestroy, AfterViewInit{
+export class PcComponentsListComponent implements OnInit, OnDestroy, AfterViewInit {
   loadedPcComponents: PcComponents[] = [];
   isFetching = false;
-  error = null;
+  error: string = null;;
   private errorSub: Subscription;
   dataSource: MatTableDataSource<PcComponents>;
   displayedColumns: string[] = ['name', 'price', 'family', 'actions'];
@@ -30,7 +30,7 @@ export class PcComponentsListComponent implements OnInit, OnDestroy, AfterViewIn
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private pcComponentsService: PcComponentsService,
-              private router: Router) { }
+    private router: Router) { }
 
   ngOnInit(): void {
     this.dataSource = new MatTableDataSource();
@@ -48,7 +48,7 @@ export class PcComponentsListComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   //risetta l'errore a null
-  onHandleError(){
+  onHandleError() {
     this.error = null;
   }
 
@@ -61,7 +61,7 @@ export class PcComponentsListComponent implements OnInit, OnDestroy, AfterViewIn
     }
   }
 
-  fetchPcComponent(){
+  fetchPcComponent() {
     this.errorSub = this.pcComponentsService.error.subscribe(
       errorMessage => {
         this.error = errorMessage;

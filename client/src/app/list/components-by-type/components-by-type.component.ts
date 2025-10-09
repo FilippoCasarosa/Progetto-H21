@@ -23,9 +23,9 @@ export class ComponentsByTypeComponent implements OnInit, AfterViewInit {
   someObservable$: any;
   componentType: ComponentType;
   isFetching = false;
-  error = null;
+  error: string = null;
   list: PcComponents[];
-  private errorSub: Subscription;
+  private readonly errorSub: Subscription;
   dataSource: MatTableDataSource<PcComponents>;
   displayedColumns: string[] = ['name', 'price', 'family', 'actions'];
 
@@ -33,11 +33,10 @@ export class ComponentsByTypeComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
 
 
-  constructor(private pcComponentsService: PcComponentsService,
-              private listService: ListService,
-              private compatibilityService: CompatibilityService,
-              private router: Router,
-              private route: ActivatedRoute) { }
+  constructor(
+    private readonly listService: ListService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.dataSource = new MatTableDataSource();
@@ -63,7 +62,7 @@ export class ComponentsByTypeComponent implements OnInit, AfterViewInit {
    * Resetta l'errore a null
    * @author Filippo Casarosa
    */
-  onHandleError(){
+  onHandleError() {
     this.error = null;
   }
 
@@ -81,13 +80,13 @@ export class ComponentsByTypeComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private consume(pcComponents: PcComponents[]){
-      this.isFetching = false;
-      this.loadedPcComponentsbyType = pcComponents;
-      this.dataSource.data = this.loadedPcComponentsbyType;
+  private consume(pcComponents: PcComponents[]) {
+    this.isFetching = false;
+    this.loadedPcComponentsbyType = pcComponents;
+    this.dataSource.data = this.loadedPcComponentsbyType;
   }
 
-  private manageError(error: any){
+  private manageError(error: any) {
     this.isFetching = false;
     this.error = error.message;
   }

@@ -16,10 +16,10 @@ import { FamilyService } from '../../shared/services/family.service';
   templateUrl: './families-list.component.html',
   styleUrls: ['./families-list.component.scss']
 })
-export class FamiliesListComponent implements OnInit, OnDestroy, AfterViewInit{
+export class FamiliesListComponent implements OnInit, OnDestroy, AfterViewInit {
   loadedFamilies: Family[] = [];
   isFetching = false;
-  error = null;
+  error: string = null;;
   private errorSub: Subscription;
   dataSource: MatTableDataSource<Family>;
   displayedColumns: string[] = ['name', 'actions'];
@@ -28,7 +28,7 @@ export class FamiliesListComponent implements OnInit, OnDestroy, AfterViewInit{
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private familyService: FamilyService,
-              private router: Router) { }
+    private router: Router) { }
 
   ngOnInit(): void {
     this.dataSource = new MatTableDataSource();
@@ -47,7 +47,7 @@ export class FamiliesListComponent implements OnInit, OnDestroy, AfterViewInit{
   }
 
   //risetta l'errore a null
-  onHandleError(){
+  onHandleError() {
     this.error = null;
   }
 
@@ -60,7 +60,7 @@ export class FamiliesListComponent implements OnInit, OnDestroy, AfterViewInit{
     }
   }
 
-  fetchFamilies(){
+  fetchFamilies() {
     this.errorSub = this.familyService.error.subscribe(
       errorMessage => {
         this.error = errorMessage;

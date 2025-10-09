@@ -17,7 +17,7 @@ import { PrebuiltService } from 'src/app/shared/services/prebuilt.service';
 export class EditAdminPrebuiltComponent implements OnInit {
   loadedPrebuilt = {} as Prebuilt;
   isFetching = false;
-  error = null;
+  error: string = null;;
   private errorSub: Subscription;
   saveComplete: boolean;
 
@@ -25,9 +25,9 @@ export class EditAdminPrebuiltComponent implements OnInit {
 
 
   constructor(private prebuiltService: PrebuiltService,
-              private listService: ListService,
-              private route: ActivatedRoute,
-              private router: Router) {}
+    private listService: ListService,
+    private route: ActivatedRoute,
+    private router: Router) { }
 
   ngOnInit(): void {
     this.fetchPrebuilt();
@@ -38,15 +38,15 @@ export class EditAdminPrebuiltComponent implements OnInit {
     this.loadedPrebuilt.name = this.updateForm.value.name;
     this.loadedPrebuilt.totalPrice = this.updateForm.value.totalPrice;
     this.loadedPrebuilt.usage = this.updateForm.value.usage;
-    this.loadedPrebuilt.componentList =  this.listService.getList().map((pcComponent) => {
+    this.loadedPrebuilt.componentList = this.listService.getList().map((pcComponent) => {
       return pcComponent.id
     })
     this.prebuiltService.updatePrebuilt(this.loadedPrebuilt, this.loadedPrebuilt.id).subscribe();
-    this.saveComplete= true;
+    this.saveComplete = true;
     // this.router.navigate(['/products/admin-prebuilts'], {relativeTo: this.route});
   }
 
-  fetchPrebuilt(){
+  fetchPrebuilt() {
     this.errorSub = this.prebuiltService.error.subscribe(
       errorMessage => {
         this.error = errorMessage;

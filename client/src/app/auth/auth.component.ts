@@ -1,59 +1,55 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, NgForm } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { catchError, finalize, Observable, take, tap, throwError } from 'rxjs';
 import { AuthResponseData, AuthService } from './auth.service';
 
-/**
- * @author Filippo Casarosa
- */
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.scss']
 })
-export class AuthComponent implements OnInit {
+export class AuthComponent {
   isLoginMode = true;
   isLoading = false;
-  error: string = null;
-  token: string;
+  error: string | null = null;
+  token?: string;
+
   form: FormGroup = new FormGroup({
-    username: new FormControl(''),
-    password: new FormControl(''),
+    username: new FormControl('', Validators.required),
+    password: new FormControl('', Validators.required),
   });
 
-  constructor(private authService: AuthService,
-              private router: Router) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly router: Router
+  ) { }
 
-  ngOnInit(): void {
+  onSubmit(): void {
+    if (this.form.invalid) return;
+
+    const { username, password } = this.form.value;
+
+    this.login(username, password).subscribe();
   }
 
-  onSubmit(form: NgForm) {
-    if (!form.valid){
-      return;
-    }
-    const name = form.value.username;
-    const password = form.value.password;
-
-    let authObs: Observable<AuthResponseData>
-
+  private login(name: string, password: string): Observable<AuthResponseData> {
     this.isLoading = true;
 
-    authObs = this.authService.login(name, password);
-
-    authObs.subscribe(
-      resData => {
-        console.log(resData);
-        this.isLoading = false;
+    return this.authService.login(name, password).pipe(
+      take(1),
+      tap((resData: AuthResponseData) => {
         this.token = resData.token;
-        this.router.navigate(['/products'])
-      },
-      errorMessage => {
-        console.log(errorMessage);
-        this.error = errorMessage;
+        this.router.navigate(['/products']);
+      }),
+      catchError((error) => {
+        this.error = error;
+        return throwError(() => error);
+      }),
+      finalize(() => {
         this.isLoading = false;
-      }
+        this.form.reset(); // reset del form alla fine dello stream
+      })
     );
-    form.reset();
   }
 }

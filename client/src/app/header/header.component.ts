@@ -15,12 +15,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private adminSub: Subscription;
   isAuthenticated: boolean = false;
 
-  constructor(private router: Router,
-              private authService: AuthService) { }
+  constructor(
+    private readonly router: Router,
+    private readonly authService: AuthService
+  ) { }
 
   ngOnInit(): void {
     this.adminSub = this.authService.admin.subscribe(admin => {
-    this.isAuthenticated = !!admin
+      this.isAuthenticated = !!admin
     });
   }
 
@@ -28,7 +30,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.adminSub.unsubscribe();
   }
 
-  onLogout(){
+  onLogout() {
     this.authService.logout();
     window.location.reload();
   }

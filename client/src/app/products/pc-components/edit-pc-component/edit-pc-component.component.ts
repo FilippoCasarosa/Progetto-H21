@@ -17,15 +17,15 @@ import { PcComponentsService } from "src/app/shared/services/pc-components.servi
 export class EditPcComponentComponent implements OnInit {
   loadedPcComponent = {} as PcComponents;
   isFetching = false;
-  error = null;
+  error: string = null;;
   private errorSub: Subscription;
   saveComplete: boolean;
 
   @ViewChild('f', { static: false }) updateForm: NgForm;
 
   constructor(private pcComponentService: PcComponentsService,
-              private route: ActivatedRoute,
-              private router: Router) {}
+    private route: ActivatedRoute,
+    private router: Router) { }
 
   ngOnInit(): void {
     this.fetchPcComponent();
@@ -43,7 +43,7 @@ export class EditPcComponentComponent implements OnInit {
     // window.location.reload();
   }
 
-  fetchPcComponent(){
+  fetchPcComponent() {
     this.errorSub = this.pcComponentService.error.subscribe(
       errorMessage => {
         this.error = errorMessage;

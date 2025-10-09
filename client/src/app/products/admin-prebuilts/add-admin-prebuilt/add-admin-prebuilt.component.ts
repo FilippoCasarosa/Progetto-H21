@@ -1,10 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Image } from 'src/app/shared/models/image.model';
-import { Prebuilt } from 'src/app/shared/models/prebuilt.model';
-import { ImageService } from 'src/app/shared/services/image.service';
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
 import { PrebuiltService } from 'src/app/shared/services/prebuilt.service';
+import { Prebuilt } from 'src/app/shared/models/prebuilt.model';
+
 /**
  * @author Filippo Casarosa
  * @author Andrei Blindu
@@ -14,40 +12,42 @@ import { PrebuiltService } from 'src/app/shared/services/prebuilt.service';
   templateUrl: './add-admin-prebuilt.component.html',
   styleUrls: ['./add-admin-prebuilt.component.scss']
 })
-export class AddAdminPrebuiltComponent implements OnInit{
-  newPrebuilt: Prebuilt;
-  selectedFile: any;//File?
-  error = null;
-  isFetching = false;
-  saveComplete: boolean;
+export class AddAdminPrebuiltComponent implements OnInit {
+  form: FormGroup;
+  newPrebuilt: Prebuilt = new Prebuilt();
+  selectedFile = null;
+  saveComplete = false;
 
-  @ViewChild('f', { static: false }) updateForm: NgForm;
-
-  constructor(private prebuiltService: PrebuiltService,
-              private router: Router,
-              private imageService: ImageService) {
-    this.newPrebuilt = new Prebuilt;
-  }
+  constructor(private readonly prebuiltService: PrebuiltService) { }
 
   ngOnInit(): void {
-    this.saveComplete = false;
+    this.form = new FormGroup({
+      name: new FormControl(''),
+      use: new FormControl(''),
+      price: new FormControl('')
+    });
   }
 
-  upload(files){
-    this.selectedFile = files.item(0);
+  // <-- Add this method
+  upload(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+    }
   }
 
 
   onAddPrebuilt() {
-    this.newPrebuilt.name = this.updateForm.value.name;
-    this.newPrebuilt.usage = this.updateForm.value.use;
-    this.newPrebuilt.totalPrice = this.updateForm.value.price;
+    if (this.form.invalid) return;
 
-    this.prebuiltService.save(this.newPrebuilt, this.selectedFile).subscribe((prebuiltSaved) => {
-    this.saveComplete = true;
-      //TODO mostrare risultato
+    this.newPrebuilt.name = this.form.value.name;
+    this.newPrebuilt.usage = this.form.value.use;
+    this.newPrebuilt.totalPrice = this.form.value.price;
+
+    this.prebuiltService.save(this.newPrebuilt, this.selectedFile).subscribe(() => {
+      this.saveComplete = true;
+      this.form.reset();
+      this.selectedFile = null;
     });
   }
-
-
 }

@@ -4,7 +4,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularMaterialModule } from './modules/angualr-material/angular-material.module';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
@@ -49,14 +48,14 @@ import { DetailPrebuiltComponent } from './prebuilts/detail-prebuilt/detail-preb
     ListComponent,
 
     ProductsComponent,
-      PcComponentsListComponent,
-      EditPcComponentComponent,
+    PcComponentsListComponent,
+    EditPcComponentComponent,
 
-      AdminPrebuiltsListComponent,
+    AdminPrebuiltsListComponent,
 
-      CompatibilityListComponent,
+    CompatibilityListComponent,
 
-      FamiliesListComponent,
+    FamiliesListComponent,
 
     DialogComponent,
     ComponentsByTypeComponent,
@@ -76,7 +75,6 @@ import { DetailPrebuiltComponent } from './prebuilts/detail-prebuilt/detail-preb
     HttpClientModule,
     BrowserAnimationsModule,
     AngularMaterialModule,
-    FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule
   ],

@@ -19,16 +19,18 @@ export interface AuthResponseData {
   expireDate: Date;
 }
 
-@Injectable({providedIn: 'root'})
-export class AuthService{
+@Injectable({ providedIn: 'root' })
+export class AuthService {
   admin = new BehaviorSubject<Admin>(null);
   private tokenExpirationTimer: any;
 
-  constructor(private http: HttpClient,
-              private router: Router,
-              private messageService: MessageService) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly router: Router,
+    private readonly messageService: MessageService
+  ) { }
 
-  login(name: string, password: string){
+  login(name: string, password: string) {
     return this.http.post<AuthResponseData>(
       'http://localhost:8080/login',
       {
@@ -37,17 +39,17 @@ export class AuthService{
         returnSecureToken: true
       }
     )
-    .pipe(catchError(this.handleError),
-      tap(resData => {
-        this.handleAuthentication(
-          resData.id,
-          resData.credential,
-          resData.token,
-          resData.expireDate
-        );
-      }),
-      tap((data) => console.log('token: ' + data.token))
-    );
+      .pipe(catchError(this.handleError),
+        tap(resData => {
+          this.handleAuthentication(
+            resData.id,
+            resData.credential,
+            resData.token,
+            resData.expireDate
+          );
+        }),
+        tap((data) => console.log('token: ' + data.token))
+      );
   }
 
   autoLogin() {
@@ -65,7 +67,7 @@ export class AuthService{
       adminData.id,
       adminData.name,
       adminData._token,
-      new Date (adminData._tokenExpireDate)
+      new Date(adminData._tokenExpireDate)
     );
     console.log(loadedAdmin);
     if (loadedAdmin.token) {
@@ -76,7 +78,7 @@ export class AuthService{
     }
   }
 
-  logout(){
+  logout() {
     const url = `http://localhost:8080/logout`
     return this.http.get<boolean>(url).subscribe(_ => {
       this.admin.next(null);
@@ -104,7 +106,7 @@ export class AuthService{
     credential: Credential,
     token: string,
     expireDate: Date
-  ){
+  ) {
     const admin = new Admin(
       id,
       credential.name,
@@ -118,7 +120,7 @@ export class AuthService{
     localStorage.setItem('adminData', JSON.stringify(admin));
   }
 
-  private handleError(errorRes: HttpErrorResponse){
+  private handleError(errorRes: HttpErrorResponse) {
     let errorMessage = 'ACCESSO NEGATO';
     if (!errorRes.error || !errorRes.error.error) {
       return throwError(errorMessage);

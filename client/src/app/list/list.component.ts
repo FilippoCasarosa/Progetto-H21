@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -19,10 +19,10 @@ import { ListService } from '../shared/services/list.service';
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent implements OnInit, OnDestroy {
-  pcComponents: PcComponents [];
+  pcComponents: PcComponents[];
   loadedComponentTypes: ComponentType[];
   isFetching: boolean;
-  error = null;
+  error: string = null;;
   private errorSub: Subscription;
   totalPrice: number;
   totalPower: number;
@@ -36,21 +36,21 @@ export class ListComponent implements OnInit, OnDestroy {
   verticalPosition: MatSnackBarVerticalPosition = 'top';
 
 
-  constructor(private componentTypeService: ComponentTypeService,
-              private listService: ListService,
-              private router: Router,
-              private dialog: MatDialog,
-              private _snackBar: MatSnackBar,
-              private authService: AuthService) {
-  this.loadedComponentTypes = [];
-  this.pcComponents = [];
-  this.isFetching = false;
-  this.totalPrice = 0;
-  this.totalPower = 0;
-  this.powerSupplied = 0;
-  this.enableCompleteButton = false;
-  this.isAuthenticated = false;
-  this.isFirst = false;
+  constructor(private readonly componentTypeService: ComponentTypeService,
+    private readonly listService: ListService,
+    private readonly router: Router,
+    private readonly dialog: MatDialog,
+    private readonly _snackBar: MatSnackBar,
+    private readonly authService: AuthService) {
+    this.loadedComponentTypes = [];
+    this.pcComponents = [];
+    this.isFetching = false;
+    this.totalPrice = 0;
+    this.totalPower = 0;
+    this.powerSupplied = 0;
+    this.enableCompleteButton = false;
+    this.isAuthenticated = false;
+    this.isFirst = false;
   }
 
   ngOnInit(): void {
@@ -58,11 +58,11 @@ export class ListComponent implements OnInit, OnDestroy {
       this.isAuthenticated = !!admin
     });
     this.fetchComponentType();
-    if(this.listService.getList().length >= 1) {
+    if (this.listService.getList().length >= 1) {
       this.isFirst = false;
       this.fetchConfiguration();
     }
-    else{
+    else {
       this.isFirst = true;
     }
   }
@@ -71,15 +71,15 @@ export class ListComponent implements OnInit, OnDestroy {
    * @author Filippo Casarosa
    */
   ngOnDestroy(): void {
-    this.errorSub.unsubscribe;
-    this.adminSub.unsubscribe;
+    this.errorSub.unsubscribe();
+    this.adminSub.unsubscribe();
   }
 
   /**
    * Resetta l'errore a null
    * @author Filippo Casarosa
    */
-  onHandleError(){
+  onHandleError() {
     this.error = null;
   }
 
@@ -87,7 +87,7 @@ export class ListComponent implements OnInit, OnDestroy {
    * Recupera tutti i ComponentType
    * @author Filippo Casarosa
    */
-  fetchComponentType(){
+  fetchComponentType() {
     this.errorSub = this.componentTypeService.error.subscribe(
       errorMessage => {
         this.error = errorMessage;
@@ -97,7 +97,7 @@ export class ListComponent implements OnInit, OnDestroy {
     this.componentTypeService.getComponentType().subscribe(
       componentType => {
         this.isFetching = false;
-        this.loadedComponentTypes = componentType.map((current,index) => {
+        this.loadedComponentTypes = componentType.map((current, index) => {
           return {
             ...current,
             active: index === this.listService.getCurrent()
@@ -105,9 +105,9 @@ export class ListComponent implements OnInit, OnDestroy {
         })
         console.log('Component Types');
         console.log(this.loadedComponentTypes);
-        if(this.pcComponents.length === this.loadedComponentTypes.length){
+        if (this.pcComponents.length === this.loadedComponentTypes.length) {
           this.enableCompleteButton = true;
-        }else{
+        } else {
           this.enableCompleteButton = false;
         }
       },
@@ -122,14 +122,14 @@ export class ListComponent implements OnInit, OnDestroy {
    * Recupera la configurazione
    * @author Filippo Casarosa
    */
-  fetchConfiguration(){
+  fetchConfiguration() {
     this.pcComponents = this.listService.getList();
     console.log('pcComponents');
     console.log(this.pcComponents);
     this.totalPrice = this.listService.getTotalPrice();
     console.log('Get total price');
     console.log(this.totalPrice);
-    this.totalPower =this.listService.getTotalPower();
+    this.totalPower = this.listService.getTotalPower();
     console.log('TotalPower');
     console.log(this.totalPower);
     this.powerSupplied = this.listService.getPowerSupplied();
@@ -142,12 +142,12 @@ export class ListComponent implements OnInit, OnDestroy {
    * conferma Configurazione
    * @author Filippo Casarosa
    */
-  confirmConfig(){
-    if(this.listService.checkPowerSupplied()){
+  confirmConfig() {
+    if (this.listService.checkPowerSupplied()) {
       this.openSnackBar();
       this.listService.deleteLastComponent();
       this.fetchComponentType();
-    } else{
+    } else {
       const dialogRef = this.dialog.open(DialogComponent, {
         width: '330px',
       });
@@ -157,13 +157,13 @@ export class ListComponent implements OnInit, OnDestroy {
     }
   }
 
-  completeConfiguration(){
-    this.listService.autoConfig(this.pcComponents[this.pcComponents.length -1].componentFamily.type.id);
+  completeConfiguration() {
+    this.listService.autoConfig(this.pcComponents[this.pcComponents.length - 1].componentFamily.type.id);
     let time = timer(200, 200);
     time.subscribe(() => {
       this.fetchComponentType();
       this.totalPrice = this.listService.getTotalPrice();
-      this.totalPower =this.listService.getTotalPower();
+      this.totalPower = this.listService.getTotalPower();
       this.powerSupplied = this.listService.getPowerSupplied();
     });
     // this.router.navigate(['/prebuilts']);
@@ -174,7 +174,7 @@ export class ListComponent implements OnInit, OnDestroy {
    * apre SnackBar per errore potenza
    * @author Filippo Casarosa
    */
-  openSnackBar(){
+  openSnackBar() {
     this._snackBar.open('Potenza erogata non sufficiente', 'ok', {
       horizontalPosition: this.horizontalPosition,
       verticalPosition: this.verticalPosition,

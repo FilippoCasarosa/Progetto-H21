@@ -19,7 +19,7 @@ import { CompatibilityService } from 'src/app/shared/services/compatibility.serv
 export class CompatibilityListComponent implements OnInit, AfterViewInit {
   loadedCompatibilies: Compatibility[] = [];
   isFetching = false;
-  error = null;
+  error: string = null;;
   private errorSub: Subscription;
   dataSource: MatTableDataSource<Compatibility>;
   displayedColumns: string[] = ['family1', 'family2', 'actions'];
@@ -28,7 +28,7 @@ export class CompatibilityListComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private compatibilityService: CompatibilityService,
-              private router: Router) { }
+    private router: Router) { }
 
   ngOnInit(): void {
     this.dataSource = new MatTableDataSource();
@@ -46,11 +46,11 @@ export class CompatibilityListComponent implements OnInit, AfterViewInit {
   }
 
   //risetta l'errore a null
-  onHandleError(){
+  onHandleError() {
     this.error = null;
   }
 
-  fetchCompatibilities(){
+  fetchCompatibilities() {
     this.errorSub = this.compatibilityService.error.subscribe(
       errorMessage => {
         this.error = errorMessage;

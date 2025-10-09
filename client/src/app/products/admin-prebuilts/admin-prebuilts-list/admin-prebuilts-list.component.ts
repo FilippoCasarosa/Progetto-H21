@@ -18,7 +18,7 @@ import { PrebuiltService } from 'src/app/shared/services/prebuilt.service';
 export class AdminPrebuiltsListComponent implements OnInit, AfterViewInit {
   loadedPrebuilts: Prebuilt[] = [];
   isFetching = false;
-  error = null;
+  error: string = null;;
   private errorSub: Subscription;
   dataSource: MatTableDataSource<Prebuilt>;
   displayedColumns: string[] = ['name', 'price', 'use', 'actions'];
@@ -27,7 +27,7 @@ export class AdminPrebuiltsListComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private prebuiltService: PrebuiltService,
-              private router: Router) { }
+    private router: Router) { }
 
   ngOnInit(): void {
     this.dataSource = new MatTableDataSource();
@@ -46,7 +46,7 @@ export class AdminPrebuiltsListComponent implements OnInit, AfterViewInit {
   }
 
   //risetta l'errore a null
-  onHandleError(){
+  onHandleError() {
     this.error = null;
   }
 
@@ -59,7 +59,7 @@ export class AdminPrebuiltsListComponent implements OnInit, AfterViewInit {
     }
   }
 
-  fetchPrebuilts(){
+  fetchPrebuilts() {
     this.errorSub = this.prebuiltService.error.subscribe(
       errorMessage => {
         this.error = errorMessage;

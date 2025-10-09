@@ -15,17 +15,17 @@ import { FamilyService } from 'src/app/shared/services/family.service';
   styleUrls: ['./edit-family.component.scss']
 })
 export class EditFamilyComponent implements OnInit {
-  loadedFamily = {} as  Family;
+  loadedFamily = {} as Family;
   isFetching = false;
-  error = null;
+  error: string = null;;
   private errorSub: Subscription;
   saveComplete: boolean;
 
   @ViewChild('f', { static: false }) updateForm: NgForm;
 
   constructor(private familyService: FamilyService,
-              private route: ActivatedRoute,
-              private router: Router) {}
+    private route: ActivatedRoute,
+    private router: Router) { }
 
   ngOnInit(): void {
     this.fetchPcComponent();
@@ -40,7 +40,7 @@ export class EditFamilyComponent implements OnInit {
     // this.router.navigate(['/products/family'], {relativeTo: this.route});
   }
 
-  fetchPcComponent(){
+  fetchPcComponent() {
     this.errorSub = this.familyService.error.subscribe(
       errorMessage => {
         this.error = errorMessage;
