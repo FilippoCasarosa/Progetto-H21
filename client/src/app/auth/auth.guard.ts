@@ -1,31 +1,24 @@
-import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
-import { Observable } from "rxjs";
-import { map, take } from "rxjs/operators";
-import { AuthService } from "./auth.service";
+import { inject } from '@angular/core';
+import { Router, CanActivateFn } from '@angular/router';
+import { map, take } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 
 /**
  * @author Filippo Casarosa
+ * Functional guard for Angular 15+
  */
-@Injectable({ providedIn: 'root' })
-export class AuthGuard implements CanActivate {
-  constructor(private readonly authService: AuthService,
-    private readonly router: Router) { }
+export const authGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    router: RouterStateSnapshot
-  ): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-    return this.authService.admin.pipe(
-      take(1),
-      map(admin => {
-        const isAuth = !!admin
-        if (isAuth) {
-          return true;
-        }
-        return this.router.createUrlTree(['/auth']);
-      })
-    );
-  }
-
-}
+  return authService.admin.pipe(
+    take(1),
+    map(admin => {
+      const isAuth = !!admin;
+      if (isAuth) {
+        return true;
+      }
+      return router.createUrlTree(['/auth']);
+    })
+  );
+};

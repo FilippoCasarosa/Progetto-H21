@@ -7,7 +7,7 @@ import { ListComponent } from './list/list.component';
 import { PcComponentsListComponent } from './products/pc-components/pc-components-list/pc-components-list.component';
 import { CompatibilityListComponent } from './products/compatibility/compatibility-list.component';
 import { AdminPrebuiltsListComponent } from './products/admin-prebuilts/admin-prebuilts-list/admin-prebuilts-list.component';
-import { AuthGuard } from './auth/auth.guard';
+import { authGuard } from './auth/auth.guard';  // ← Import della funzione, non della classe
 import { FamiliesListComponent } from './products/families/families-list.component';
 import { ComponentsByTypeComponent } from './list/components-by-type/components-by-type.component';
 import { EditPcComponentComponent } from './products/pc-components/edit-pc-component/edit-pc-component.component';
@@ -22,36 +22,32 @@ import { AddAdminPrebuiltComponent } from './products/admin-prebuilts/add-admin-
 const appRoutes: Routes = [
   { path: '', redirectTo: '/auth', pathMatch: 'full' },
   { path: 'prebuilts', component: PrebuiltsComponent },
-  { path: 'products',
+  {
+    path: 'products',
     component: ProductsComponent,
-    canActivate: [AuthGuard],
+    canActivate: [authGuard],  // ← Usa la funzione direttamente
     children: [
-      { path: 'pc-components',component: PcComponentsListComponent},
-      {path: 'admin-prebuilts', component: AdminPrebuiltsListComponent},
-      {path: 'family', component: FamiliesListComponent},
-      {path: 'compatibility', component: CompatibilityListComponent}
-    ]},
-  { path: 'auth', component:  AuthComponent},
-
-  { path: 'edit-pc-component/:id', component: EditPcComponentComponent},
-  { path: 'add-pc-component', component: AddPcComponentComponent},
-
-  { path: 'edit-family/:id', component: EditFamilyComponent},
-  { path: 'add-family', component: AddFamilyComponent},
-
-  { path: 'edit-compatibility/:id', component: EditCompatibilityComponent},
-  { path: 'add-compatibility', component: AddCompatibilityComponent},
-
-  { path: 'edit-prebuilt/:id', component: EditAdminPrebuiltComponent},
-  { path: 'add-prebuilt', component: AddAdminPrebuiltComponent},
-
+      { path: 'pc-components', component: PcComponentsListComponent },
+      { path: 'admin-prebuilts', component: AdminPrebuiltsListComponent },
+      { path: 'family', component: FamiliesListComponent },
+      { path: 'compatibility', component: CompatibilityListComponent }
+    ]
+  },
+  { path: 'auth', component: AuthComponent },
+  { path: 'edit-pc-component/:id', component: EditPcComponentComponent },
+  { path: 'add-pc-component', component: AddPcComponentComponent },
+  { path: 'edit-family/:id', component: EditFamilyComponent },
+  { path: 'add-family', component: AddFamilyComponent },
+  { path: 'edit-compatibility/:id', component: EditCompatibilityComponent },
+  { path: 'add-compatibility', component: AddCompatibilityComponent },
+  { path: 'edit-prebuilt/:id', component: EditAdminPrebuiltComponent },
+  { path: 'add-prebuilt', component: AddAdminPrebuiltComponent },
   { path: 'list', component: ListComponent },
-  { path: 'list/components-by-type/:id', component: ComponentsByTypeComponent}
-
+  { path: 'list/components-by-type/:id', component: ComponentsByTypeComponent }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(appRoutes,{ onSameUrlNavigation: 'reload' })],
+  imports: [RouterModule.forRoot(appRoutes, { onSameUrlNavigation: 'reload' })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
