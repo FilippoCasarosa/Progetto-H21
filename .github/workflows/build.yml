@@ -37,14 +37,9 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Build and analyze backend
+      - name: Run SonarQube Analysis
         working-directory: ./server
-        run:
-          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar ^
-          -Dsonar.projectKey=Progetto-H21 ^
-          -Dsonar.projectName='Progetto H21' ^
-          -Dsonar.host.url=%SONAR_HOST_URL% ^
-          -Dsonar.login=%SONAR_TOKEN%
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Progetto-H21 -Dsonar.projectName="Progetto H21" -Dsonar.host.url=$env:SONAR_HOST_URL -Dsonar.login=$env:SONAR_TOKEN
 
       # -----------------------------
       # Frontend (Angular/JS/TS)
