@@ -40,8 +40,10 @@ jobs:
       - name: Run SonarQube Analysis
         working-directory: ./server
         shell: cmd
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Progetto-H21 -Dsonar.projectName="Progetto H21" -Dsonar.host.url=$env:SONAR_HOST_URL -Dsonar.login=$env:SONAR_TOKEN
-
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B verify sonar:sonar -Dsonar.host.url=%SONAR_HOST_URL% -Dsonar.login=%SONAR_TOKEN%
       # -----------------------------
       # Frontend (Angular/JS/TS)
       # -----------------------------
