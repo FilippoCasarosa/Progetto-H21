@@ -28,7 +28,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: 21
-          distribution: 'temurin'
+          distribution: "temurin"
 
       - name: Cache Maven packages
         uses: actions/cache@v4
@@ -38,6 +38,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Build and analyze backend
+        working-directory: ./server
         run:
           mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar ^
           -Dsonar.projectKey=Progetto-H21 ^
@@ -51,7 +52,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Install frontend dependencies
         run: |
@@ -59,6 +60,7 @@ jobs:
           npm ci
 
       - name: Run SonarScanner for frontend
+        working-directory: ./client
         run: |
           cd client
           npm install -g sonarqube-scanner
