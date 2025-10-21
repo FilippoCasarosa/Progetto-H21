@@ -39,6 +39,7 @@ jobs:
 
       - name: Run SonarQube Analysis
         working-directory: ./server
+        shell: cmd
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Progetto-H21 -Dsonar.projectName="Progetto H21" -Dsonar.host.url=$env:SONAR_HOST_URL -Dsonar.login=$env:SONAR_TOKEN
 
       # -----------------------------
@@ -56,6 +57,7 @@ jobs:
 
       - name: Run SonarScanner for frontend
         working-directory: ./client
+        shell: cmd
         run: |
           cd client
           npm install -g sonarqube-scanner
