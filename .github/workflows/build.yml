@@ -42,6 +42,15 @@ jobs:
         run: mvn clean test
         continue-on-error: true # Continue even if tests fail
 
+      - name: Debug Environment Variables
+        shell: cmd
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          echo SONAR_HOST_URL is set: %SONAR_HOST_URL%
+          echo Token is set (length should be visible)
+
       - name: Run SonarQube Analysis
         working-directory: ./server
         shell: cmd
