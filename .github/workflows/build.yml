@@ -37,24 +37,23 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Run Tests
+      - name: Run Tests (with JaCoCo)
         working-directory: ./server
         run: mvn clean test
-        continue-on-error: true # Continue even if tests fail
-
-      - name: Debug Environment Variables
-        shell: cmd
-        env:
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          echo SONAR_HOST_URL is set: %SONAR_HOST_URL%
-          echo Token is set (length should be visible)
+        continue-on-error: true # optional
 
       - name: Run SonarQube Analysis
         working-directory: ./server
         shell: cmd
-        run: mvn sonar:sonar -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} -Dsonar.login=${{ secrets.SONAR_TOKEN }} -DskipTests
+        run: |
+          mvn sonar:sonar ^
+            -Dsonar.projectKey=Progetto-H21 ^
+            -Dsonar.projectName="Progetto H21" ^
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} ^
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }} ^
+            -Dsonar.java.coveragePlugin=jacoco ^
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/jacoco-report/jacoco.xml
+
       # -----------------------------
       # Frontend (Angular/JS/TS)
       # -----------------------------
