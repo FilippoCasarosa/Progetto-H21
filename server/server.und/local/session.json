@@ -1,0 +1,145 @@
+{
+    "Session": "default",
+    "Sessions": {
+        "default": {
+            "SessionData": {
+                "2_1920x1080_1920x1080": {
+                    "AnalysisLog": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "Locator"
+                        ]
+                    },
+                    "DockWidgets": {
+                        "FloatingWidgetOrder": [
+                        ],
+                        "OpenWindows": {
+                            "00ProjectOverviewWidget": {
+                                "height": 462,
+                                "width": 250
+                            },
+                            "01EntityFilter": {
+                                "height": 484,
+                                "width": 250
+                            },
+                            "02Locator": {
+                                "height": 242,
+                                "width": 790
+                            },
+                            "03AnalysisLog": {
+                                "height": 220,
+                                "width": 790
+                            },
+                            "04InfoBrowserWidget_0": {
+                                "height": 481,
+                                "width": 270
+                            },
+                            "05IssueBrowser": {
+                                "height": 240,
+                                "width": 790
+                            }
+                        },
+                        "TabGroupFrontWidgets": [
+                            "ProjectOverviewWidget",
+                            "AnalysisLog"
+                        ]
+                    },
+                    "EntityFilter": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectOverviewWidget"
+                        ]
+                    },
+                    "InfoBrowserWidget_0": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "IssueBrowser": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "Locator": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "AnalysisLog"
+                        ]
+                    },
+                    "ProjectOverviewWidget": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "EntityFilter"
+                        ]
+                    }
+                },
+                "EntityFilter": {
+                    "LastEntityFilterUsed": "All Entities"
+                },
+                "GraphicFilterSettings": {
+                    "Enabled": false
+                },
+                "InfoBrowserWindowManager": {
+                    "InfoBrowserSyncKinds": {
+                        "0": [
+                            "Entities",
+                            "Architectures",
+                            "Commits",
+                            "Violations"
+                        ]
+                    }
+                },
+                "LastAccessedPid": "26964",
+                "LastDisplayGroup": "2_1920x1080_1920x1080",
+                "Locator": {
+                    "LastEntityFilterUsed": "All Entities"
+                },
+                "MaintainEditorHistory": {
+                    "FileRanges": {
+                        "size": 0
+                    },
+                    "index": -1
+                },
+                "MiscSaveStates": {
+                    "entitySelected": "@lit.skinjobs.api.ReadySetupAPI.newElement.(Anon_1)@kj5it.skinjobs.api.ReadySetupAPI.newElement.(Anon_1)@f./src/main/java/it/skinjobs/api/ReadySetupAPI.java",
+                    "ib": "entity:||:@l./src/test/java/it/skinjobs/api/ComponentAPITest.java",
+                    "projectOverviewCharts": "true",
+                    "projectOverviewChartsPosition": 1,
+                    "projectOverviewChartsSelected": "true",
+                    "projectOverviewChartsWorkspace": 0,
+                    "selection": "ComponentAPITest.java"
+                },
+                "ProjectUI": {
+                    "projectview": [
+                        "main",
+                        "main/java"
+                    ],
+                    "projectviewcuritem": "main/java",
+                    "projectviewselection": [
+                        "main/java"
+                    ]
+                },
+                "SplittableWorkspace": {
+                    "active workspace": 0,
+                    "primary ws size": 1584,
+                    "split orientation": -1
+                },
+                "violationbrowser": {
+                    "filter": ""
+                }
+            }
+        }
+    }
+}
